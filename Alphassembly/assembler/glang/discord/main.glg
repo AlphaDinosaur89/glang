@@ -1,6 +1,6 @@
 include "std.glg"
 
-var TOKEN = "MTA0MTA3OTE1MjI4NTA2OTQyNA.G8uOzv.rt7kECIDjLy8oDC9zPW639daZ-wBspKnqmiyXc"
+var TOKEN = ""
 var CHANNEL_ID = "1068134156191674368"
 
 def send_message(message):
