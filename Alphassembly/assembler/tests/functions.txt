@@ -1,0 +1,24 @@
+This test succeded with exit code: 0
+
+stdout:
+INFO: Compiling to tests/functions.asb
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Variable with deeper local scope
+Variable in local scope
+Variable in global scope
+
+stderr:

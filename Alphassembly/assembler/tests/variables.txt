@@ -1,0 +1,8 @@
+This test succeded with exit code: 0
+
+stdout:
+INFO: Compiling to tests/variables.asb
+var69 is less than var420
+var420 + var69 = 489
+
+stderr:
