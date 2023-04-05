@@ -398,12 +398,12 @@ namespace Alphassembly
 
         public void Set(Value_t value)
         {
-            SetValue(value);
+            Program.vm.Variables[VarScope][Reference] = value;
         }
 
         public void SetValue(Value_t value)
         {
-            Program.vm.Variables[VarScope][Reference] = value;
+            Program.vm.Variables[VarScope][Reference].Value = value;
         }
 
         public override object GetValue()
