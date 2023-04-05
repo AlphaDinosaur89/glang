@@ -1,4 +1,4 @@
 # glang
 Idk this is a programming language ig
 
-Made for fun it sucks dont use and stuff ok bye
+Made it for fun and very much not intended to be used seriously
