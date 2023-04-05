@@ -1,0 +1,16 @@
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\bin\Release\net5.0\Alphassembly.exe
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\bin\Release\net5.0\Alphassembly.deps.json
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\bin\Release\net5.0\Alphassembly.runtimeconfig.json
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\bin\Release\net5.0\Alphassembly.runtimeconfig.dev.json
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\bin\Release\net5.0\Alphassembly.dll
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\bin\Release\net5.0\ref\Alphassembly.dll
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\bin\Release\net5.0\Alphassembly.pdb
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\obj\Release\net5.0\Alphassembly.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\obj\Release\net5.0\Alphassembly.AssemblyInfoInputs.cache
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\obj\Release\net5.0\Alphassembly.AssemblyInfo.cs
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\obj\Release\net5.0\Alphassembly.csproj.CoreCompileInputs.cache
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\obj\Release\net5.0\Alphassembly.dll
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\obj\Release\net5.0\ref\Alphassembly.dll
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\obj\Release\net5.0\Alphassembly.pdb
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\obj\Release\net5.0\Alphassembly.genruntimeconfig.cache
+C:\Users\gamed\Documents\projs\alphassembly\Alphassembly\Alphassembly\obj\Release\net5.0\Alphassembly.csproj.AssemblyReference.cache
