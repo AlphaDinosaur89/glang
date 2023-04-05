@@ -1,0 +1,38 @@
+include "asm.glg"
+include "types.glg"
+include "list.glg"
+
+def int(value):
+    asm_push(value)
+    return asm_bcall(2)
+end
+
+def float(value):
+    asm_push(value)
+    return asm_bcall(3)
+end
+
+def str(value):
+    asm_push(value)
+    return asm_bcall(4)
+end
+
+def char(value):
+    asm_push(value)
+    return asm_bcall(12)
+end
+
+def ord(char):
+    asm("push [char]")
+    return asm_bcall(16)
+end
+
+def list(value):
+    var tmp = []
+    if type(value) == str:
+        for i = 0 to len(value):
+            append(ref(tmp), getat(value, i))
+        end
+    end
+    return tmp
+end

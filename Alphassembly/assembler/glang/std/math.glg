@@ -1,0 +1,30 @@
+def abs(i):
+    if i < 0:
+        return -i
+    else:
+        return i
+    end
+end
+
+def sqrt(n):
+    var x = n
+	var y = 1.0
+	var e = 0.00000000000001 # accuracy
+	
+	while x - y > e:
+		var x = (x + y)/2
+		var y = n/x
+	end
+	
+	return x
+end
+
+# TODO: add gamma function
+
+def factorial(n):
+	if n == 0:
+		return 1
+	end
+	
+	return n * factorial(n-1)
+end

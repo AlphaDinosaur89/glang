@@ -1,0 +1,65 @@
+include "io.glg"
+include "types.glg"
+include "list.glg"
+include "conversion.glg"
+
+var string = 'String standard module'
+
+# from python might have to change
+var string.ascii_lowercase = 'abcdefghijklmnopqrstuvwxyz'
+var string.ascii_uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+var string.ascii_letters = string.ascii_lowercase + string.ascii_uppercase
+var string.digits = '0123456789'
+var string.hexdigits = '0123456789abcdefABCDEF'
+var string.octdigits = '01234567'
+var string.punctuation = '!\"#$%&\'\()*+,-./:;<=>?@[\\]^_`{|}~'
+var string.whitespace = "' \\t\\n\\r\\x0b\\x0c'"
+var string.printable = string.digits + string.ascii_letters + string.punctuation + string.whitespace
+
+def substring(str, start, end_):
+    if start > end_:
+        println("start argument must be lower than end argument in substring function")
+    end
+
+    var result = ""
+	for i = start to end_:
+		var result = result + getat(str, i)
+	end
+    
+	if type(str) == ptr:
+		setref(str, result)
+	end
+	
+    return result
+end
+
+def indexOf(str, search):
+	for i = 0 to len(str) - len(search) + 1:
+		if substring(str, i, i+len(search)) == search:
+			return i
+		end
+	end
+	
+	return -1
+end
+
+def replace(s, search, replace):
+	var result = ""
+	var index = 0
+	
+	while index < len(s):
+		var match_index = indexOf(substring(s, index, len(s)), search)
+		if match_index == -1:
+			var result = result + substring(s, index, len(s))
+			break
+		else:
+			var result = result + substring(s, index, match_index) + replace
+			var index = index + match_index + len(search)
+		end
+	end
+	
+	if type(s) == ptr:
+		setref(s, result)
+	end
+	return result
+end

@@ -1,0 +1,20 @@
+include "asm.glg"
+include "core.glg"
+
+var int = "int"
+var str = "str"
+var float = "float"
+var list = "list"
+var ptr = "ptr"
+var object = "object"
+var function = "function"
+
+def type(value):
+    if getattr(value, '.type'):
+        var tp = getattr(value, '.type')
+        return tp
+    end
+
+    asm_push(value)
+    return asm_bcall(11)
+end

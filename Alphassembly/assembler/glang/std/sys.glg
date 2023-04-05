@@ -1,0 +1,9 @@
+include "asm.glg"
+include "list.glg"
+
+var argv = asm_bcall(ARGV_VALUE)
+
+def exit(exit_code):
+    asm("push [exit_code]")
+    asm("done")
+end

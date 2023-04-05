@@ -1,0 +1,13 @@
+include "list.glg"
+include "asm.glg"
+
+def randint(min, max):
+    asm_push(max)
+    asm_push(min)
+    return asm_bcall(1)
+end
+
+def random_choice(list):
+	var idx = randint(0, len(list)-1)
+    return getat(list, idx)
+end

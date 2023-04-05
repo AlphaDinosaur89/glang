@@ -1,0 +1,8 @@
+def asm_bcall(id):
+    asm("mov ax, [id]")
+    return asm("bcall")
+end
+
+def asm_push(value):
+    asm("push [value]")
+end

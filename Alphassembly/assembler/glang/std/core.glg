@@ -1,0 +1,28 @@
+include "types.glg"
+include "io.glg"
+include "asm.glg"
+
+def setref(ref, value):
+	if type(ref) != ptr:
+		println("Can only use setref() on pointers")
+		return 1
+	end
+	
+    asm("spt [ref], [value]")
+	return 0
+end
+
+def getattr(variable, attr):
+    asm_push(variable)
+    asm_push(attr)
+
+    return asm_bcall(18)
+end
+
+def setattr(variable, attr, value):
+    asm_push(value)
+    asm_push(variable)
+    asm_push(attr)
+
+    return asm_bcall(17)
+end

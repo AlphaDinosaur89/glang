@@ -1,0 +1,45 @@
+include "asm.glg"
+include "core.glg"
+
+def setat(list, idx, value):
+    asm_push(value)
+    asm_push(idx)
+    asm_push(list)
+    return asm_bcall(7)
+end
+
+def getat(list, idx):
+    asm_push(idx)
+    asm_push(list)
+    return asm_bcall(6)
+end
+
+def append(list, val):
+    asm_push(val)
+    asm_push(list)
+    return asm_bcall(8)
+end
+
+def pop(list):
+    asm_push(list)
+    return asm_bcall(9)
+end
+
+def len(list):
+    asm_push(list)
+    return asm_bcall(10)
+end
+
+def getrange(list, start, endn):
+	if endn < start:
+		print("End must be bigger than start in getrange function")
+		exit(1)
+	end
+	
+	var l = []
+	for i = start to endn+1:
+		var l = append(l, getat(list, i))
+	end
+	
+	return l
+end

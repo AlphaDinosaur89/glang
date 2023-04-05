@@ -1,0 +1,15 @@
+include "io.glg"
+include "math.glg"
+include "random.glg"
+include "conversion.glg"
+include "string.glg"
+include "list.glg"
+include "asm.glg"
+include "types.glg"
+include "os.glg"
+#include "sys.glg" not implemented yet
+include "core.glg"
+include "requests.glg"
+include "time.glg"
+
+# make so all of the asm_bcall ids be constants

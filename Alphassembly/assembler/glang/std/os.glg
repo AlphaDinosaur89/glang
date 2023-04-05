@@ -1,0 +1,6 @@
+include "asm.glg"
+
+def system(cmd):
+    asm_push(cmd)
+    return asm_bcall(13)
+end

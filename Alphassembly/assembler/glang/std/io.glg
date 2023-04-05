@@ -1,0 +1,21 @@
+include "asm.glg"
+
+def println(msg):
+    print(msg)
+    print("\n")
+end
+
+def input(msg):
+    print(msg)
+    return asm_bcall(0)
+end
+
+def breakinput(msg):
+    print(msg)
+    return asm_bcall(14)
+end
+
+def open(filename):
+    asm_push(filename)
+    return asm_bcall(15)
+end

@@ -1,0 +1,27 @@
+include "std.glg"
+
+# TODO: add timing
+
+def fastfib(n):
+    var s5 = 2.23606797749979
+	return ((1.0+s5)**n-(1.0-s5)**n)/(2.0**n*s5)
+end
+
+def slowfib(n):
+    if n <= 1:
+        return n
+    end
+    return slowfib(n-1) + slowfib(n-2)
+end
+
+println("Fibonacci function with math:\n50 iterations\n")
+
+for i = 0 to 50:
+    println(fastfib(i))
+end
+
+println("\nFibonacci function with recursion:\nonly 20 iterations because its very slow\n")
+
+for i = 0 to 20:
+    println(slowfib(i))
+end

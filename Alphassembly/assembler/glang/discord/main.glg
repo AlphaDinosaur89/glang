@@ -1,0 +1,19 @@
+include "std.glg"
+
+var TOKEN = "MTA0MTA3OTE1MjI4NTA2OTQyNA.G8uOzv.rt7kECIDjLy8oDC9zPW639daZ-wBspKnqmiyXc"
+var CHANNEL_ID = "1068134156191674368"
+
+def send_message(message):
+    var headers = ''
+    var headers.Authorization = 'Bot ' + TOKEN
+    setattr(headers, 'Content-Type', 'application/json')
+    
+    var payload = ''
+    var payload.content = message
+
+    var url = 'https://discord.com/api/v9/channels/' + CHANNEL_ID + '/messages'
+    var response = requests_post(url, headers, payload)
+    return response
+end
+
+print(send_message("Hi this message was sent from the programming language i made :blush:"))
