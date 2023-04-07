@@ -99,7 +99,8 @@ class Codegen:
         output = ""
         
         if type(node.var_name_tok) is BinOpNode:
-            node.var_name_tok.left_node = VarAccessNode(node.var_name_tok.left_node.tok)
+            if type(node.var_name_tok.left_node) is not VarAccessNode:
+                node.var_name_tok.left_node = VarAccessNode(node.var_name_tok.left_node.tok)
                         
             output += res.register(self.emit(node.value_node))
             if res.error: return res
@@ -286,11 +287,10 @@ class Codegen:
             output += f'mov ax, {self.class_bcall}\n'
             output += 'bcall\n'
             
-            tempvar = self.var_idx
-            output += f'mov [.V{tempvar}], ax\n'
-            self.var_idx += 1
-            
             if type(node.right_node) is CallNode:
+                tempvar = self.var_idx
+                output += f'mov [.V{tempvar}], ax\n'
+                self.var_idx += 1
                 for arg in node.right_node.arg_nodes:
                     output += res.register(self.emit(arg))
                     if res.error: return res
@@ -654,12 +654,7 @@ class Codegen:
                     arg = node.arg_nodes[0]
                     output += res.register(BUILTINS[func_name].execute(1, arg.var_name_tok.value, True))
                 elif func_name == "new":
-                    args_len = len(node.arg_nodes)                    
-                    if args_len > 1:
-                        return res.failure(CTError(
-                        self.pos_start, self.pos_end,
-                        f"{args_len -1} too many args passed into new()"
-                    ))
+                    args_len = len(node.arg_nodes)
                     
                     if args_len < 1:
                         return res.failure(CTError(
@@ -668,6 +663,7 @@ class Codegen:
                     ))
                     
                     arg = node.arg_nodes[0]
+                    args = node.arg_nodes[1:]
                     
                     if type(arg) is not ClassNode:
                         return res.failure(CTError(
@@ -719,9 +715,21 @@ class Codegen:
                     
                     if methods:
                         for node in methods.element_nodes:
-                            node.func_name_tok.value = '.' + node.func_name_tok.value + c_id
+                            func_name = node.func_name_tok.value
+                            
+                            try:
+                                emit = False
+                                _ = node.func_name_tok.set
+                                #print(node.func_name_tok)
+                                c_id = node.func_name_tok.c_id
+                            except AttributeError:
+                                emit = True
+                                func_name = '.' + func_name + c_id
+                                node.func_name_tok.value = func_name
+                                setattr(node.func_name_tok, 'set', True)
+                                setattr(node.func_name_tok, 'c_id', c_id)
                            
-                            if node.func_name_tok.value == '.constructor' + c_id:
+                            if func_name == '.constructor' + c_id:
                                 if len(node.arg_name_toks) < 1:
                                     return res.failure(CTError(node.func_name_tok.pos_start, node.func_name_tok.pos_end,
                                                             'Class construtor must have at least one argument'))
@@ -729,11 +737,13 @@ class Codegen:
                                                                  pos_start=node.arg_name_toks[0].pos_start,
                                                                  pos_end=node.arg_name_toks[0].pos_end))
                             
-                            output += res.register(self.emit(node))
-                            if res.error: return res
+                            # Avoid redefining already defined methods
+                            if emit:
+                                output += res.register(self.emit(node))
+                                if res.error: return res
                             
-                            #value                            
-                            output += f'mov ax, [{node.func_name_tok.value}]\n'
+                            #value
+                            output += f'mov ax, [{func_name}]\n'
                             output += 'push ax\n'
                     
                             #variable
@@ -741,13 +751,19 @@ class Codegen:
                             output += 'push ax\n'
                             
                             #attr
-                            output += f'mov ax, \'{node.func_name_tok.value[1:-len(c_id)]}\'\n'
+                            output += f'mov ax, \'{func_name[1:-len(c_id)]}\'\n'
                             output += 'push ax\n'
                             
                             output += 'mov ax, 17\n'
                             output += 'bcall\n'
                             
-                            if node.func_name_tok.value == '.constructor' + c_id:
+                            if func_name == '.constructor' + c_id:
+                                for arg in args:
+                                    output += res.register(self.emit(arg))
+                                    if res.error: return res
+                                    
+                                    output += 'push ax\n'
+                                
                                 output += f'mov ax, [.temp{class_name}]\n'
                                 output += 'push ax\n'
                                 
