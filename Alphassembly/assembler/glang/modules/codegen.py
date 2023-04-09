@@ -196,6 +196,32 @@ class Codegen:
         
         return res.success(output)
     
+    def class_def(self, node):
+        res = CTResult()
+        output = ""
+        
+        last_node = node.right_node
+        while type(last_node) is BinOpNode:
+            last_node = last_node.right_node
+        
+        nd, _ = node.remove_last_node()
+        
+        self.class_bcall = '18'
+        
+        output += res.register(self.emit(nd))
+        if res.error: return res        
+        self.class_bcall = '17'
+        
+        output += 'push ax\n'
+        
+        output += f'mov ax, "{last_node.var_name_tok.value}" # cock\n'
+        output += 'push ax\n'
+        
+        #output += 'mov ax, 17\n'
+        #output += 'bcall\n'
+        
+        return res.success(output)
+    
     def class_access(self, node):
         res = CTResult()
         output = ""
@@ -221,11 +247,6 @@ class Codegen:
             
             output += f'mov ax, "{left.var_name_tok.value}"\n'
             output += f'push ax\n'
-            
-            if i >= 1 and self.class_bcall == '17':
-                return res.failure(CTError(right.pos_start,
-                                           right.pos_end,
-                                           "Please use setattr() in the core.glg library (This language does not yet support using multiple levels of object access)"))
             
             output += f'mov ax, {self.class_bcall}\n'
             output += 'bcall\n'
@@ -281,8 +302,12 @@ class Codegen:
                 return res.success(output)
         
         if node.op_tok.type == TT_DOT:
-            output += res.register(self.class_access(node))
+            if self.class_bcall == '18':
+                output += res.register(self.class_access(node))
+            else:
+                output += res.register(self.class_def(node))
             if res.error: return res
+                
 
             output += f'mov ax, {self.class_bcall}\n'
             output += 'bcall\n'
@@ -442,7 +467,14 @@ class Codegen:
             output += "sub bx, 1\n"
             output += "mul ax, bx\n"
         elif node.op_tok.type == TT_MUL:
-            output += f"pt [{node.node.var_name_tok.value}], [.Vptr]\n"
+            var = self.var_idx
+            self.var_idx += 1
+            
+            output += res.register(self.emit(node.node))
+            if res.error: return res
+            output += f'mov [.V{var}], ax\n'
+            
+            output += f"pt [.V{var}], [.Vptr]\n"
             output += "mov ax, [.Vptr]\n"
         
         return res.success(output)
@@ -713,14 +745,13 @@ class Codegen:
                     c_id = str(self.var_idx)
                     self.var_idx += 1
                     
-                    if methods:
+                    if methods and methods.element_nodes:
                         for node in methods.element_nodes:
                             func_name = node.func_name_tok.value
                             
                             try:
                                 emit = False
                                 _ = node.func_name_tok.set
-                                #print(node.func_name_tok)
                                 c_id = node.func_name_tok.c_id
                             except AttributeError:
                                 emit = True

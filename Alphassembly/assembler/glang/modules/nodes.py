@@ -71,6 +71,19 @@ class BinOpNode:
     def __repr__(self):
         return f'({self.left_node}, {self.op_tok}, {self.right_node})'
 
+    def remove_last_node(self):
+        if not isinstance(self.right_node, BinOpNode):
+            # if the right node is not a BinOpNode, then it is the last node
+            return self.left_node, None
+
+        # recursively remove the last node from the right subtree
+        new_right_node, op_tok = self.right_node.remove_last_node()
+
+        # create a new BinOpNode with the updated right subtree
+        new_node = BinOpNode(self.left_node, self.op_tok, new_right_node)
+
+        return new_node, op_tok
+
 
 class UnaryOpNode:
     def __init__(self, op_tok, node):
