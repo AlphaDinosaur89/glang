@@ -27,11 +27,11 @@ def ord(char):
     return asm_bcall(16)
 end
 
-def list(value):
+def tolist(value):
     var tmp = []
-    if type(value) == str:
+    if type(value) == types.str:
         for i = 0 to len(value):
-            append(ref(tmp), getat(value, i))
+            append(*tmp, getat(value, i))
         end
     end
     return tmp

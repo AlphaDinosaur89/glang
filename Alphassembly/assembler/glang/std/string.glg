@@ -26,7 +26,7 @@ def substring(str, start, end_):
 		var result = result + getat(str, i)
 	end
     
-	if type(str) == ptr:
+	if type(str) == types.ptr:
 		setref(str, result)
 	end
 	
@@ -41,6 +41,21 @@ def indexOf(str, search):
 	end
 	
 	return -1
+end
+
+def lastIndexOf(str, search):
+    var matches = []
+	for i = 0 to len(str) - len(search) + 1:
+		if substring(str, i, i+len(search)) == search:
+			append(matches, i)
+		end
+	end
+	
+    if len(matches) == 0:
+        return -1
+    else:
+        return getat(matches, len(matches)-1)
+    end
 end
 
 def replace(s, search, replace):
@@ -58,8 +73,89 @@ def replace(s, search, replace):
 		end
 	end
 	
-	if type(s) == ptr:
+	if type(s) == types.ptr:
 		setref(s, result)
 	end
 	return result
+end
+
+def toUpperCase(str):
+    var ret = ''
+
+    for i = 0 to len(str):
+        var ch = getat(str, i)
+
+        var idx = indexOf(string.ascii_lowercase, ch)
+
+        if idx == -1:
+            var ret = ret + ch
+        else:
+            var ret = ret + getat(string.ascii_uppercase, idx)
+        end
+    end
+
+    return ret
+end
+
+def toLowerCase(str):
+    var ret = ''
+
+    for i = 0 to len(str):
+        var ch = getat(str, i)
+
+        var idx = indexOf(string.ascii_uppercase, ch)
+
+        if idx == -1:
+            var ret = ret + ch
+        else:
+            var ret = ret + getat(string.ascii_lowercase, idx)
+        end
+    end
+
+    return ret
+end
+
+def reverse(str):
+    var ret = ''
+
+    for i = len(str)-1 to -1 step -1:
+        var ret = ret + getat(str, i)
+    end
+
+    return ret
+end
+
+def split(str, delimiter):
+	if delimiter == "":
+		return tolist(str)
+	end
+	
+	var len_ = len(delimiter)
+	var iter = len(str) - len_ + 1
+	var arr = [""]
+	var idx = 0
+	
+	for i = 0 to iter:
+		var sample = ""
+		for x = i to i + len_:
+			var sample = sample + getat(str, x)
+		end
+	
+		var isSplit = sample == delimiter
+		var isEnded = i == iter - 1
+		
+		if isSplit:
+			var i = i + len_ - 1
+			var idx = idx + 1
+			append(*arr, "")
+		else:
+			if isEnded:
+				setat(*arr, idx, getat(arr, idx) + sample)
+			else:				
+				setat(*arr, idx, getat(arr, idx) + getat(str, i))
+			end
+		end
+	end
+	
+	return arr
 end

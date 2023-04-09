@@ -3,7 +3,7 @@ include "io.glg"
 include "asm.glg"
 
 def setref(ref, value):
-	if type(ref) != ptr:
+	if type(ref) != types.ptr:
 		println("Can only use setref() on pointers")
 		return 1
 	end

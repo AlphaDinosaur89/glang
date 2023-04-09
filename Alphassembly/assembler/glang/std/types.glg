@@ -1,13 +1,17 @@
 include "asm.glg"
 include "core.glg"
 
-var int = "int"
-var str = "str"
-var float = "float"
-var list = "list"
-var ptr = "ptr"
-var object = "object"
-var function = "function"
+class types:
+	int = "int"
+	str = "str"
+	float = "float"
+	list = "list"
+	ptr = "ptr"
+	object = "object"
+	function = "function"
+end
+
+var types = new(class types)
 
 def type(value):
     if getattr(value, '.type'):
