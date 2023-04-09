@@ -214,7 +214,7 @@ class Codegen:
         
         output += 'push ax\n'
         
-        output += f'mov ax, "{last_node.var_name_tok.value}" # cock\n'
+        output += f'mov ax, "{last_node.var_name_tok.value}"\n'
         output += 'push ax\n'
         
         #output += 'mov ax, 17\n'
