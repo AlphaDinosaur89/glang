@@ -209,7 +209,7 @@ def compile():
         utils.errorp(error)
         utils.fail(1)
     
-    result = init + result
+    result = init + cdgen.hoisted_definitions + result
     
     with open(out + ".as", "w") as o:
         o.write(result)
