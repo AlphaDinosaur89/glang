@@ -16,6 +16,7 @@ class Codegen:
         self.loop_breakc = False
         self.class_bcall = '18'
         self.class_definitions = {}
+        self.hoisted_definitions = ''
     
     def emit(self, node):
         method_name = f'emit_{type(node).__name__}'
@@ -825,17 +826,17 @@ class Codegen:
         l0 = self.label_idx
         self.label_idx += 1
         
-        output += 'mov ax, "function"\n'
-        output += 'push ax\n'
+        self.hoisted_definitions += 'mov ax, "function"\n'
+        self.hoisted_definitions += 'push ax\n'
         
-        output += f"mov [{node.func_name_tok.value}], {node.func_name_tok.value}\n"
-        output += f"mov ax, [{node.func_name_tok.value}]\n"
-        output += 'push ax\n'
+        self.hoisted_definitions += f"mov [{node.func_name_tok.value}], {node.func_name_tok.value}\n"
+        self.hoisted_definitions += f"mov ax, [{node.func_name_tok.value}]\n"
+        self.hoisted_definitions += 'push ax\n'
         
         output += "mov ax, '.type'\n"
-        output += "push ax\n"
-        output += "mov ax, 17\n"
-        output += "bcall\n"
+        self.hoisted_definitions += "push ax\n"
+        self.hoisted_definitions += "mov ax, 17\n"
+        self.hoisted_definitions += "bcall\n"
         
         output += f"jmp .L{l0}\n"
         
