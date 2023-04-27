@@ -1,7 +1,7 @@
 include "std.glg"
 
-var TOKEN = ""
-var CHANNEL_ID = "1068134156191674368"
+var TOKEN = "MTA0MTA3OTE1MjI4NTA2OTQyNA.GZ6z2W.03FcMg6JrRR1c4CiONVxxJX7PoAsR-eMdUebBE"
+var CHANNEL_ID = "1099232424887599121"
 
 def send_message(message):
     var headers = ''
@@ -16,4 +16,6 @@ def send_message(message):
     return response
 end
 
-print(send_message("Hi this message was sent from the programming language i made :blush:"))
+while 1:
+	send_message(input('message:'))
+end

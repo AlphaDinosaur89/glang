@@ -269,7 +269,7 @@ class Codegen:
         res = CTResult()
         output = ""
         
-        if not node.op_tok.type in ('AND', 'OR', 'DOT'):
+        if not node.op_tok.value in ('and', 'or', 'DOT'):
             if res.should_return(): return res
             output += res.register(self.emit(node.right_node))
             if node.op_tok.type in (TT_PLUS, TT_MINUS, TT_MUL, TT_DIV, TT_MOD):
@@ -282,6 +282,46 @@ class Codegen:
             if res.should_return(): return res
         else:
             if node.op_tok.matches(TT_KEYWORD, 'and') or node.op_tok.matches(TT_KEYWORD, 'or'):
+                output += res.register(self.emit(node.left_node))
+                if res.error: return res
+                
+                left_var = self.var_idx
+                self.var_idx += 1
+                
+                output += "test ax, ax\n"
+                output += f"mov [.V{left_var}], ax\n"
+                
+                output += res.register(self.emit(node.right_node))
+                if res.error: return res
+                
+                right_var = self.var_idx
+                self.var_idx += 1
+                
+                output += "test ax, ax\n"
+                output += f"mov [.V{right_var}], ax\n"
+                
+                # allows for something like this:
+                # 1 and 1 | 1 or 2 | foo() and bar()
+                if type(node.right_node) is not BinOpNode:
+                    varname = Token(TT_IDENTIFIER, f'.V{right_var}',
+                                    node.right_node.pos_start,
+                                    node.right_node.pos_start)
+                    node.right_node = BinOpNode(VarAccessNode(varname), Token(TT_NE, None,
+                                                                       node.right_node.pos_start, 
+                                                                       node.right_node.pos_end),
+                                                                       IntegerNode(Token(TT_INT, 0,
+                                                                                         node.right_node.pos_start,
+                                                                                         node.right_node.pos_end)))
+                if type(node.left_node) is not BinOpNode:
+                    varname = Token(TT_IDENTIFIER, f'.V{left_var}',
+                                    node.left_node.pos_start,
+                                    node.left_node.pos_start)
+                    node.left_node = BinOpNode(VarAccessNode(varname), Token(TT_NE, None,
+                                                                       node.left_node.pos_start, 
+                                                                       node.left_node.pos_end),
+                                                                       IntegerNode(Token(TT_INT, 0,
+                                                                                         node.left_node.pos_start,
+                                                                                         node.left_node.pos_end)))
                 output += res.register(self.andor_op(node)) + '\n'
                 if res.error: return res
                 

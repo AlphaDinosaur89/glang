@@ -1,18 +1,9 @@
 include "io.glg"
 
-class Ball:
-    def constructor(this):
-        var this.property = 'balls'
-    end
-
-    def set_property(this, val):
-        var this.property = val
-        return this.property
-    end
+def foo(arg):
+    return arg
 end
 
-var b = new(class Ball)
-
-println(b.property)
-b.set_property('large balls')
-println(b.property)
+if foo(1) and foo(1):
+    println("works")
+end
