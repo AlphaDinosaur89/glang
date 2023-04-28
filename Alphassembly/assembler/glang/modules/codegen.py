@@ -762,7 +762,7 @@ class Codegen:
                         #value
 
                         if value is None:
-                            output += f'mov ax, \'\'\n'
+                            output += f'mov ax, 0\n'
                         else:
                             output += res.register(self.emit(value))
                             if res.error: return res
