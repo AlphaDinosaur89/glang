@@ -11,5 +11,6 @@ include "os.glg"
 include "core.glg"
 include "requests.glg"
 include "time.glg"
+include "events.glg"
 
 # make so all of the asm_bcall ids be constants

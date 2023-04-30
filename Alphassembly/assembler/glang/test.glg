@@ -1,9 +1,16 @@
+include "events.glg"
+include "time.glg"
 include "io.glg"
 
-def foo(arg):
-    return arg
+var a = new(class EventEmitter)
+
+def foo(args):
+    print(args)
 end
 
-if foo(1) and foo(1):
-    println("works")
-end
+a.on('test', foo)
+a.on('test', foo)
+a.once('test', foo)
+
+a.emit("test", 'balls')
+a.emit("test", 'balls')

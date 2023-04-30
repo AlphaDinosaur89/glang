@@ -1,0 +1,89 @@
+include "core.glg"
+include "list.glg"
+include "conversion.glg"
+
+class Event:
+    def constructor(this, name, function):
+        var this.name = name
+        var this.function = function
+    end
+end
+
+# TODO: add a method to delete event
+class EventEmitter:
+	def constructor(this):
+        var this.events = ''
+	end
+
+    def on(this, event, function):
+        var events = getattr(this.events, event)
+        var fn = int(function)
+        var fn.once = false
+        if events:
+            var evnt = new(class Event, event, fn)
+            append(events, evnt)
+
+            setattr(this.events, event, events)
+        else:
+            var evnt = new(class Event, event, fn)
+
+            setattr(this.events, event, [evnt])
+        end
+    end
+
+    def once(this, event, function):
+        var events = getattr(this.events, event)
+        var fn = int(function)
+        var fn.once = true
+        if events:
+            var evnt = new(class Event, event, fn)
+            append(events, evnt)
+
+            setattr(this.events, event, events)
+        else:
+            var evnt = new(class Event, event, fn)
+
+            setattr(this.events, event, [evnt])
+        end
+    end
+
+    def findEvent(this, name):
+        var events = getattr(this.events, name)
+        if events:
+            var events = events
+        else:
+            return 0
+        end
+        for i = 0 to len(events):
+            var event = getat(events, i)
+            if event.name == name:
+                return events
+            end
+        end
+        return 0
+    end
+
+    def emit(this, event, args):
+        # i need to make a not unary op :sob:
+        var evnt = this.findEvent(event)
+        if evnt:
+            var evnt = evnt
+        else:
+            return
+        end
+
+        for i = 0 to len(evnt):
+            var fn = getat(evnt, i)
+            var fn = fn.function
+            if fn == 0:
+                continue
+            end
+            fn(args)
+            if fn.once:
+                var evnt = setat(evnt, i, 0)
+                # replace this to delete instead of nullifying
+                setattr(this.events, event, evnt)
+            end
+        end
+    end
+end

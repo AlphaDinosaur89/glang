@@ -210,7 +210,7 @@ class Codegen:
         self.class_bcall = '18'
         
         output += res.register(self.emit(nd))
-        if res.error: return res        
+        if res.error: return res
         self.class_bcall = '17'
         
         output += 'push ax\n'
@@ -269,7 +269,7 @@ class Codegen:
         res = CTResult()
         output = ""
         
-        if not node.op_tok.value in ('and', 'or', 'DOT'):
+        if not node.op_tok.value in ('and', 'or', 'DOT') and not node.op_tok.type in (TT_DOT):
             if res.should_return(): return res
             output += res.register(self.emit(node.right_node))
             if node.op_tok.type in (TT_PLUS, TT_MINUS, TT_MUL, TT_DIV, TT_MOD):
@@ -357,7 +357,7 @@ class Codegen:
                 tempvar = self.var_idx
                 output += f'mov [.V{tempvar}], ax\n'
                 self.var_idx += 1
-                for arg in node.right_node.arg_nodes:
+                for arg in node.right_node.arg_nodes[::-1]:
                     output += res.register(self.emit(arg))
                     if res.error: return res
                     output += 'push ax\n'
@@ -830,7 +830,7 @@ class Codegen:
                             output += 'bcall\n'
                             
                             if func_name == '.constructor' + c_id:
-                                for arg in args:
+                                for arg in args[::-1]:
                                     output += res.register(self.emit(arg))
                                     if res.error: return res
                                     
