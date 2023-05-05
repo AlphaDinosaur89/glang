@@ -873,7 +873,7 @@ class Codegen:
         self.hoisted_definitions += f"mov ax, [{node.func_name_tok.value}]\n"
         self.hoisted_definitions += 'push ax\n'
         
-        output += "mov ax, '.type'\n"
+        self.hoisted_definitions += "mov ax, '.type'\n"
         self.hoisted_definitions += "push ax\n"
         self.hoisted_definitions += "mov ax, 17\n"
         self.hoisted_definitions += "bcall\n"
