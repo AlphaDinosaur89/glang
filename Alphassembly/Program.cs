@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using System.Linq;
 
 // alphassembly vm
 
@@ -13,7 +15,7 @@ namespace Alphassembly
         public Value_t right;
     }
 
-    class Vm
+    public class Vm
     {
         public Int64 ip;
         public Stack<Value_t> stack;
@@ -148,11 +150,31 @@ namespace Alphassembly
         {
             dx[dx.Count - 1] = value;
         }
+
+        // TODO: Maybe add function and variable metadata in the future to the bytecode
+        public void CallFunction(Integer_t address, List<Value_t> args)
+        {
+            // NOTE: setting the byte (b) is also needed for this to work, that is done in op.BCALL
+            retstack.Push(ip+1);
+            ip = (long)address.Value;
+            IncreaseScope();
+
+            foreach (Value_t arg in args)
+            {
+                stack.Push(arg);
+            }
+
+            return;
+        }
     }
 
-    class Value_t
+    public class Value_t
     {
         protected object value;
+
+        public object instance;
+
+        public Type type;
 
         public Dictionary<String, Value_t> Obj = new();
 
@@ -196,7 +218,7 @@ namespace Alphassembly
 
     }
 
-    class Float_t : Value_t
+    public class Float_t : Value_t
     {
         public Float_t(double num)
         {
@@ -220,7 +242,7 @@ namespace Alphassembly
         }
     }
 
-    class Integer_t : Value_t
+    public class Integer_t : Value_t
     {
 
         public Integer_t(Int64 num)
@@ -246,7 +268,7 @@ namespace Alphassembly
 
     }
 
-    class String_t : Value_t
+    public class String_t : Value_t
     {
 
         public String_t(string str)
@@ -276,10 +298,22 @@ namespace Alphassembly
 
     }
 
-    class List_t : Value_t
+    public class List_t : Value_t
     {
 
         public List_t(List<Value_t> num)
+        {
+            Value = num;
+        }
+        public List_t(List<String_t> num)
+        {
+            Value = num;
+        }
+        public List_t(List<Integer_t> num)
+        {
+            Value = num;
+        }
+        public List_t(List<Pointer_t> num)
         {
             Value = num;
         }
@@ -299,12 +333,15 @@ namespace Alphassembly
         {
             string s = "";
             s += '[';
-            List<Value_t> vl;
+
             if (Value is Pointer_t)
             {
                 Value = ((Pointer_t)Value).Value;
             }
-            vl = (List<Value_t>)Value;
+
+            // Create a new List<Value_t> from the List<Integer_t>
+            List<Value_t> vl = ((List<Integer_t>)Value).Select(i => (Value_t)i).ToList();
+
             for (int i = 0; i < vl.Count; i++)
             {
                 Value_t val = vl[i];
@@ -312,15 +349,18 @@ namespace Alphassembly
                 if (val is not String_t)
                 {
                     s += val.GetString();
-                } else
+                }
+                else
                 {
                     s += "'";
                     s += val.GetString();
                     s += "'";
                 }
-                if (i != ((List<Value_t>)Value).Count-1)
+
+                if (i != vl.Count - 1)
                     s += ", ";
             }
+
             s += ']';
 
             return s;
@@ -333,7 +373,7 @@ namespace Alphassembly
 
     }
 
-    class Pointer_t : Value_t
+    public class Pointer_t : Value_t
     {
         /* not sure if this is the correct way to implement this
          * not sure if pointers can only point to variables
@@ -788,9 +828,8 @@ namespace Alphassembly
             string filename = args[0];
             if (File.Exists(filename))
             {
-                BuiltinFunctions funcs = new BuiltinFunctions();
                 vm = new Vm();
-                funcs.vm = vm;
+                BuiltinFunctions funcs = new BuiltinFunctions(vm);
                 int l = 0;
                 fileBytes = new List<int>();
                 foreach (byte o in File.ReadAllBytes(filename))
@@ -1047,7 +1086,6 @@ namespace Alphassembly
                                 }
                             }
                             currop = 0;
-
                             break;
                         case op.RET:
                             if (GetLen_1(vm.retstack) < 1)
@@ -1071,6 +1109,27 @@ namespace Alphassembly
                                 vm.retstack.Push(vm.ip + 3);
 
                             Value_t arg = ParseArg();
+
+                            // call module methods
+                            if (arg.GetObj(".type") != null && (string)arg.GetObj(".type").Value == "modulefunc")
+                            {
+                                long arg_num = (long)arg.GetObj("args").Value;
+
+                                List<Value_t> arg_list = new();
+                                for (i = 0;i<arg_num;i++)
+                                {
+                                    arg_list.Add(vm.stack.Pop());
+                                }
+
+                                MethodInfo method = arg.type.GetMethod((string)arg.GetObj(".methodname").Value);
+
+                                vm.Setax((Value_t)method.Invoke(arg.instance, new object[] { arg_list }));
+
+                                vm.retstack.Pop();
+                                currop = 0;
+                                break;
+                            }
+
                             if (arg is not Integer_t)
                             {
                                 Console.Error.WriteLine("Call value must be integer");
@@ -1897,6 +1956,11 @@ namespace Alphassembly
 
                             vm.Setax(funcs.Functions[functionid](args_list));
 
+                            if (functionid == 22) // call function
+                            {
+                                b = fileBytes[(int)vm.ip];
+                            }
+
                             currop = 0;
                             break;
                         case op.TEST:
@@ -2101,7 +2165,7 @@ namespace Alphassembly
                                 Console.Error.WriteLine(String.Format("Unknown instruction: {0}", b));
                                 return 1;
                         }
-                        vm.ip++;
+                        vm.ip = vm.ip + 1;
                     }
                 }
                 return 0;

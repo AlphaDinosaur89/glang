@@ -1,16 +1,13 @@
-include "events.glg"
-include "time.glg"
 include "io.glg"
 
-var a = new(class EventEmitter)
-
-def foo(args):
-    print(args)
+class Animal:
+    def sound(this):
+        println("The animal makes a sound")
+    end
 end
 
-a.on('test', foo)
-a.on('test', foo)
-a.once('test', foo)
-
-a.emit("test", 'balls')
-a.emit("test", 'balls')
+class Dog(class Animal):
+    def bark(this):
+        this.sound()
+    end
+end

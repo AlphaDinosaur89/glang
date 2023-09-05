@@ -64,10 +64,16 @@ class Lexer:
                 tokens.append(Token(TT_COMMA, pos_start=self.pos))
                 self.advance()
             elif self.current_char == '+':
-                tokens.append(Token(TT_PLUS, pos_start=self.pos))
+                if len(self.text) > 1 and self.text[self.pos.idx + 1] == "+":
+                    tokens.append(Token(TT_INC, pos_start=self.pos))
+                else:
+                    tokens.append(Token(TT_PLUS, pos_start=self.pos))
                 self.advance()
             elif self.current_char == '-':
-                tokens.append(Token(TT_MINUS, pos_start=self.pos))
+                if len(self.text) > 1 and self.text[self.pos.idx + 1] == "-":
+                    tokens.append(Token(TT_DEC, pos_start=self.pos))
+                else:
+                    tokens.append(Token(TT_MINUS, pos_start=self.pos))
                 self.advance()
             elif self.current_char == '*':
                 if len(self.text) > 1 and self.text[self.pos.idx + 1] == "*":

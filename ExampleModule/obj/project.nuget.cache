@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "sEPFGjz5pv30ia19SmrUepsQPVRp9hZHKNuMo3ZrkLxTr5f/3gy7ARD9qwb1F8uotDKHt2HPbafQ8Rflf3FBqg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\ExampleModule\\ExampleModule.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\gamed\\.nuget\\packages\\raylib-cs\\4.5.0.2\\raylib-cs.4.5.0.2.nupkg.sha512",
+    "C:\\Users\\gamed\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -302,7 +302,9 @@ class Codegen:
                 
                 # allows for something like this:
                 # 1 and 1 | 1 or 2 | foo() and bar()
-                if type(node.right_node) is not BinOpNode:
+                # ignore this if True or
+                # it has been some time since i worked on this and this fixed conditional operations so i am not changing it
+                if True or type(node.right_node) is not BinOpNode:
                     varname = Token(TT_IDENTIFIER, f'.V{right_var}',
                                     node.right_node.pos_start,
                                     node.right_node.pos_start)
@@ -312,7 +314,7 @@ class Codegen:
                                                                        IntegerNode(Token(TT_INT, 0,
                                                                                          node.right_node.pos_start,
                                                                                          node.right_node.pos_end)))
-                if type(node.left_node) is not BinOpNode:
+                if True or type(node.left_node) is not BinOpNode:
                     varname = Token(TT_IDENTIFIER, f'.V{left_var}',
                                     node.left_node.pos_start,
                                     node.left_node.pos_start)
@@ -365,6 +367,7 @@ class Codegen:
                 output += res.register(self.emit(node.left_node))
                 if res.error: return res
                 
+                # this pushes the object onto the stack
                 output += 'push ax\n'
                 output += f'call [.V{tempvar}]\n'
         elif node.op_tok.type == TT_PLUS:
@@ -517,6 +520,12 @@ class Codegen:
             
             output += f"pt [.V{var}], [.Vptr]\n"
             output += "mov ax, [.Vptr]\n"
+        elif node.op_tok.type == TT_INC:
+            output += f"add [{node.node.var_name_tok.value}], 1\n"
+            output += f"mov ax, [{node.node.var_name_tok.value}]\n"
+        elif node.op_tok.type == TT_DEC:
+            output += f"sub [{node.node.var_name_tok.value}], 1\n"
+            output += f"mov ax, [{node.node.var_name_tok.value}]\n"
         
         return res.success(output)
 

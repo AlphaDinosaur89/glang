@@ -2,10 +2,6 @@ This test succeded with exit code: 0
 
 stdout:
 INFO: Compiling to tests/conditionals.asb
-AND
-AND
-AND
-AND
 true
 
 stderr:

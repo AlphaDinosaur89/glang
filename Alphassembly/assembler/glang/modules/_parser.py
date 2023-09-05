@@ -280,10 +280,22 @@ class Parser:
     def factor(self):
         res = ParseResult()
         tok = self.current_tok
-
-        if tok.type in (TT_PLUS, TT_MINUS, TT_MUL):
+        
+        if tok.type == TT_IDENTIFIER and self.tokens[self.tok_idx+1].type in (TT_INC, TT_DEC): # (placeholder) relace to TT_INC, TT_DEC
+            factor = res.register(self.power())
+            if res.error: return res
+            tok = self.current_tok
             res.register_advancement()
             self.advance()
+            res.register_advancement()
+            self.advance()
+            return res.success(UnaryOpNode(tok, factor))
+        if tok.type in (TT_PLUS, TT_MINUS, TT_MUL, TT_INC, TT_DEC):
+            res.register_advancement()
+            self.advance()
+            if tok.type in (TT_INC, TT_DEC):                
+                res.register_advancement()
+                self.advance()
             factor = res.register(self.factor())
             if res.error: return res
             return res.success(UnaryOpNode(tok, factor))

@@ -15,3 +15,11 @@ def warning(msg):
 
 def error(msg):
     print(f"{red_f}ERROR:{reset_f} {msg}")
+
+def errorp(msg):
+    """only prints the error without clog.error"""
+    print(msg)
+
+def fail(code=0):
+    print("Compilation terminated due to previous error(s).")
+    exit(code)

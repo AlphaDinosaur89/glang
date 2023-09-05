@@ -5,6 +5,8 @@ using System.Text;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
+using System.Reflection;
+using System.IO;
 
 namespace Alphassembly
 {
@@ -13,8 +15,9 @@ namespace Alphassembly
         public Dictionary<Int64, Func<List<Value_t>, Value_t>> Functions;
         public Vm vm;
 
-        public BuiltinFunctions()
+        public BuiltinFunctions(Vm v)
         {
+            vm = v;
             // TODO: Add list() conversion
             Functions = new Dictionary<Int64, Func<List<Value_t>, Value_t>>();
             Functions.Add(0, Input); // input()
@@ -39,6 +42,8 @@ namespace Alphassembly
             Functions.Add(19, Post); // post()
             Functions.Add(20, Get); // get()
             Functions.Add(21, Time); // time()
+            Functions.Add(22, Call); // call()
+            Functions.Add(23, Import); // import() import a dll
         }
 
         public int GetFuncLen(Int64 funcid)
@@ -94,6 +99,10 @@ namespace Alphassembly
                     return 1;
                 case 21:
                     return 0;
+                case 22:
+                    return 2;
+                case 23:
+                    return 1;
                 default:
                     Console.Error.WriteLine($"Unknown function id: {funcid}");
                     Environment.Exit(1);
@@ -156,18 +165,19 @@ namespace Alphassembly
 
             try
             {
-                return new Integer_t(Convert.ToInt64(double.Parse(Convert.ToString(args[0].Value),
-                    System.Globalization.CultureInfo.InvariantCulture)));
+                float floatValue = Convert.ToSingle(args[0].Value);
+                string formattedValue = floatValue.ToString("F15", System.Globalization.CultureInfo.InvariantCulture);
+                return new Integer_t(Convert.ToInt64(formattedValue));
             }
             catch
             {
                 try
                 {
-                    return new Integer_t(Convert.ToInt64(args[0].Value));
+                    return new Integer_t(Convert.ToInt64((args[0].Value)));
                 }
                 catch
                 {
-                    Console.Error.WriteLine("Invalid string to convert to integer");
+                    Console.Error.WriteLine("Invalid conversion to integer");
                     Environment.Exit(1);
                     return new Value_t();
                 }
@@ -445,7 +455,6 @@ namespace Alphassembly
 
         private Value_t GetAttr(List<Value_t> args)
         {
-            // (Inverted because i am dumb and made the compiler do it this way)
             // args[0] = attribute
             // args[1] = variable
 
@@ -515,6 +524,69 @@ namespace Alphassembly
             long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeMilliseconds();
 
             return new Float_t(unixTime/1000.0);
+        }
+
+        private Value_t Call(List<Value_t> args)
+        {
+            // args[0] = address
+            // args[1] = args
+
+            vm.CallFunction((Integer_t)args[0], (List<Value_t>)args[1].Value);
+
+            return vm.Getax();
+        }
+
+        private Value_t Import(List<Value_t> args)
+        {
+            // args[0] = file
+
+            if (!(args[0] is String_t)) {
+                Console.Error.WriteLine("Expected string as an argument in import()");
+            }
+
+            string dll_path = (string)args[0].Value;
+            string dll = Path.ChangeExtension(Path.GetFileName(dll_path), null);
+
+            Assembly assembly = Assembly.LoadFrom(dll_path);
+
+            Type type = assembly.GetType($"Alphassembly.Module.{dll}");
+            object instance = Activator.CreateInstance(type, vm);
+
+            MethodInfo[] methodInfos = type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+
+            List<string> MethodList = new();
+
+            foreach (MethodInfo method in methodInfos)
+            {
+                if (!new List<string> {"GetType", "ToString", "Equals", "GetHashCode"}.Contains(method.Name)) {
+                    MethodList.Add(method.Name);
+                    // Value_t methodname(List<Value_t> args)
+                }
+            }
+
+            String_t module = new String_t("module");
+            module.SetObj(".type", new String_t("module"));
+            
+            foreach (string method in MethodList)
+            {
+                String_t method_t = new String_t("method");
+
+                method_t.SetObj(".type", new String_t("modulefunc"));
+                
+                FieldInfo field = type.GetField($"{method}_args");
+                int args_num = (int)field.GetValue(instance) + 1; // + 1 because by default the object is passed as the first argument
+
+                method_t.SetObj("args", new Integer_t(args_num));
+
+                method_t.instance = instance;
+                method_t.type = type;
+
+                method_t.SetObj(".methodname", new String_t(method));
+
+                module.SetObj(method, method_t);
+            }
+
+            return module;
         }
     }
 }

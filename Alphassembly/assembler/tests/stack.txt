@@ -2,15 +2,6 @@ This test succeded with exit code: 0
 
 stdout:
 INFO: Compiling to tests/stack.asb
-Hello, world 3 times
-Hello, world
-Hello, world
-Hello, world
------------------------
-Mov to stack
------------------------
-arithmetics on top of stack
-69+117*30/10
-420
 
 stderr:
+Unknown type: 11, ip 237

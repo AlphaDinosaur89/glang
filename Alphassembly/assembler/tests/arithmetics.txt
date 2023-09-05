@@ -2,20 +2,6 @@ This test succeded with exit code: 0
 
 stdout:
 INFO: Compiling to tests/arithmetics.asb
-See arithmetics.s to see if calculations are correct
-Addition
-69
-Subtraction
-420
-2.7
-Division
-69
-1.6428571428571428
-Multiplication
-420
-2.1
-Modulo
-5
-4
 
 stderr:
+Unknown type: 17, ip 65

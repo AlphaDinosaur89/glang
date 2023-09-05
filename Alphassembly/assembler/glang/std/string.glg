@@ -79,40 +79,32 @@ def replace(s, search, replace):
 	return result
 end
 
-def toUpperCase(str):
-    var ret = ''
-
-    for i = 0 to len(str):
-        var ch = getat(str, i)
-
-        var idx = indexOf(string.ascii_lowercase, ch)
-
-        if idx == -1:
-            var ret = ret + ch
-        else:
-            var ret = ret + getat(string.ascii_uppercase, idx)
-        end
-    end
-
-    return ret
+def toUpperCase(d):
+	var count = len(d)
+	var string = ''
+	var a = ord('a')
+	var z = ord('z')
+	for i = 0 to count:
+		var e = ord(getat(d, i))
+		var e = e - 32 * (e >= a and e <= z)
+		var string = string + char(e)
+	end
+	
+	return string
 end
 
-def toLowerCase(str):
-    var ret = ''
-
-    for i = 0 to len(str):
-        var ch = getat(str, i)
-
-        var idx = indexOf(string.ascii_uppercase, ch)
-
-        if idx == -1:
-            var ret = ret + ch
-        else:
-            var ret = ret + getat(string.ascii_lowercase, idx)
-        end
+def toLowerCase(d):
+    var count = len(d)
+    var string = ''
+    var A = ord('A')
+    var Z = ord('Z')
+    for i = 0 to count:
+        var e = ord(getat(d, i))
+        var e = e + 32 * (e >= A and e <= Z)
+        var string = string + char(e)
     end
-
-    return ret
+    
+    return string
 end
 
 def reverse(str):

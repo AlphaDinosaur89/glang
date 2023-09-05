@@ -26,3 +26,16 @@ def setattr(variable, attr, value):
 
     return asm_bcall(17)
 end
+
+def call(func, args):
+	asm_push(args)
+	asm_push(func)
+
+	return asm_bcall(22)
+end
+
+def import(dll):
+	asm_push(dll)
+	
+	return asm_bcall(23)
+end

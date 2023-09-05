@@ -1,6 +1,7 @@
 include "asm.glg"
 include "core.glg"
 include "types.glg"
+include "string.glg"
 
 def setat(list, idx, value):
     asm_push(value)
@@ -43,4 +44,32 @@ def getrange(list, start, endn):
 	end
 	
 	return l
+end
+
+def contains(val, val2):
+	if type(val) == types.str:
+		if type(val2) == types.str:
+			if indexOf(val, val2) != -1:
+				return true
+			end
+		elif type(val2) == types.list:
+			var a = val
+			var b = val2
+			
+			for i = 0 to len(b):
+				if getat(b, i) == a:
+					return true
+				end
+			end
+		end
+	elif type(val) == types.list:
+		for i = 0 to len(val):
+			var a = getat(val, i)
+			if a == val2:
+				return true
+			end
+		end
+	end
+	
+	return false
 end

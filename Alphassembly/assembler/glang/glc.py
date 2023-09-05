@@ -1,226 +1,187 @@
-import getopt
+import argparse
 import sys
-import clog
-import utils
 import os
-from builtins_ import *
-from modules.consts import TT_KEYWORD, TT_STRING, TT_EOF, TT_KEYWORD, TT_NEWLINE
-from modules import lexer, _parser, codegen, errors, nodes, consts
 
-# glang Compiler
-# glc
+from modules import lexer, _parser, codegen, nodes
+from modules.errors import Error
+from clog import log, error, errorp
+from builtins_ import BUILTINS
 
-try:
-    opts, args = getopt.getopt(sys.argv[1:], "o:I:shr")
-except getopt.GetoptError as e:
-    clog.error(e)
-    exit(1)
+# Constants
+TT_KEYWORD = lexer.TT_KEYWORD
+TT_STRING = lexer.TT_STRING
+TT_EOF = lexer.TT_EOF
+TT_NEWLINE = lexer.TT_NEWLINE
 
-HELP = """\
-Usage: glc [options] file...
-  -o <file>         Place the output into <file>
-  -I <directory>    Add <directory> to include search path .\\std is added by default
-  -s                Doesn't print compilation information
-  -r                Compile program and run afterwards
-  -h                Displays this message\
-"""
 
-# argument parsing
+def parse_arguments():
+    parser = argparse.ArgumentParser(prog="glc", description="glang Compiler")
+    parser.add_argument("file", help="Input file")
+    parser.add_argument("-o", dest="output", help="Place the output into <file>")
+    parser.add_argument("-I", dest="include", action="append", help="Add <directory> to include search path")
+    parser.add_argument("-s", dest="silent", action="store_true", help="Doesn't print compilation information")
+    parser.add_argument("-r", dest="run", action="store_true", help="Compile program and run afterwards")
+    return parser.parse_args()
 
-silent = False
-run = False
-output = "a.asb"
-include = ['.\\', '.\\std\\']
-for opt in opts:
-    if opt[0] == '-h':
-        print(HELP)
-        exit()
-    elif opt[0] == '-o':
-        output = opt[1]
-    elif opt[0] == '-s':
-        silent = True
-    elif opt[0] == '-r':
-        run = True
-    elif opt[0] == '-I':
-        if opt[1][-1] != '\\':
-            opt[1] += '\\'
-        include.append(opt[1])
 
-if len(args) < 1:
-    utils.error("no input files")
-    utils.fail(1)
-elif len(args) > 1:
-    utils.error("more than 1 input files not supported yet")
-    utils.fail(1)
-
-def assemble(filename):
-    # switch this to an cx_Freeze executable in PATH
-
-    cmd(f"..\\main.py {filename} {output}", f"alsm {filename} {output}")
-
-def cmd(command, message=None):
-    if not silent:
-        if message is None:
-            clog.log(f"[CMD] {command}")
-        else:
-            clog.log(f"[CMD] {message}")
-
-    os.system(command)
-
-def preprocess(tokens):
-    i = 0
+def preprocess_tokens(tokens, include_paths):
     included_files = []
+    i = 0
     while i < len(tokens):
         token = tokens[i]
         if token.matches(TT_KEYWORD, 'include'):
-            token = tokens[i+1]
+            token = tokens[i + 1]
             if token.type != TT_STRING:
-                return None, errors.InvalidSyntaxError(token.pos_start,
-                                                       token.pos_end,
-                                                       "Expected string")
+                return None, f"Expected string after 'include' at {token.pos_start}"
             del tokens[i]
             inc = token
             del tokens[i]
-                       
-            if not inc.value in included_files:
-                for path in include:
-                    try:
-                        f = open(path + inc.value, "r")
-                        f.close()
-                        f = path + inc.value
+
+            if inc.value not in included_files:
+                for path in include_paths:
+                    file_path = os.path.join(path, inc.value)
+                    if os.path.isfile(file_path):
                         included_files.append(inc.value)
                         break
-                    except FileNotFoundError:
-                        f = None
-                
-                if f is None:
-                    return None, errors.IncludeError(inc.pos_start,
-                                            inc.pos_end,
-                                            f"File not found {inc.value} in the include path")
-                
-                with open(f, "r") as file:
-                    text = ""
-                    for char in file.readlines():
-                        text += char
-                
-                text += '\n'
+                else:
+                    return None, f"File not found: {inc.value} in the include path"
+
+                with open(file_path, "r") as file:
+                    text = file.read() + '\n'
                 lex = lexer.Lexer(inc.value, text)
                 toks = lex.make_tokens()
-                temp = tokens
-                tokens = toks[0]
-                tokens.extend(temp)
+                tokens = toks[0] + tokens
                 i = -1
-        
-        i += 1
-    
-    temp_tokens = []
 
+        i += 1
+
+    temp_tokens = []
     i = 0
-    while i <= len(tokens)-1:
+    while i <= len(tokens) - 1:
         token = tokens[i]
-        if token.type == TT_EOF and i != len(tokens)-1:
+        if token.type == TT_EOF and i != len(tokens) - 1:
             pass
         elif token.matches(TT_KEYWORD, 'end'):
-            temp_tokens.append(lexer.Token(TT_KEYWORD, 'end', pos_start=token.pos_start,
-                                           pos_end=token.pos_end))
-            temp_tokens.append(lexer.Token(TT_NEWLINE, pos_start=token.pos_start,
-                                           pos_end=token.pos_end))
+            temp_tokens.append(lexer.Token(TT_KEYWORD, 'end', pos_start=token.pos_start, pos_end=token.pos_end))
+            temp_tokens.append(lexer.Token(TT_NEWLINE, pos_start=token.pos_start, pos_end=token.pos_end))
         else:
             temp_tokens.append(token)
         i += 1
-    
+
     tokens = temp_tokens
     return tokens, None
 
-def compile():
-    with open(args[0], "r") as f:
-        text = ""
-        for char in f.readlines():
-            text += char
+
+def cmd(silent, command, message=None):
+    if not silent:
+        if message is None:
+            log(f"[CMD] {command}")
+        else:
+            log(f"[CMD] {message}")
+
+    os.system(command)
+
+
+def assemble(filename, output, silent):
+    # switch this to an cx_Freeze executable in PATH
+
+    cmd(silent, f"..\\main.py {filename} {output}", f"alsm {filename} {output}")
+
+
+def compile_file(input_file, output_file, include_paths, silent, run):
+    if not os.path.isfile(input_file):
+        error(f"File not found: {input_file}")
+        sys.exit(1)
+
+    with open(input_file, "r") as f:
+        text = f.read()
 
     try:
         text += '\n'
-        lex = lexer.Lexer(args[0], text)
+        lex = lexer.Lexer(input_file, text)
         tokens, error = lex.make_tokens()
         if error:
-            utils.errorp(error)
-            utils.fail(1)
+            errorp(error)
+            sys.exit(1)
     except Exception as e:
-        utils.errorp(e)
-        utils.fail(1)
-    
+        errorp(e)
+        sys.exit(1)
+
     try:
-        tokens, error = preprocess(tokens)
+        tokens, error = preprocess_tokens(tokens, include_paths)
         if error:
-            utils.errorp(error)
-            utils.fail(1)
+            errorp(error)
+            sys.exit(1)
     except Exception as e:
-        utils.errorp(e)
-        utils.fail(1)
+        errorp(e)
+        sys.exit(1)
     
-    out = os.path.splitext(output)[0]
-    
+    output_base = os.path.splitext(output_file)[0]
     if not silent:
-        clog.log(f"Generating {out}.as")
-    
+        log(f"Generating {output_base}.as")
+
     try:
         parser = _parser.Parser(tokens)
         result = parser.parse()
-        
-        try:
-            if result.error:
-                utils.errorp(result.error)
-                utils.fail(1)
-        except AttributeError:
-            pass
-        
+        if type(result) is not tuple and result.error:
+            errorp(result.error)
+            sys.exit(1)
         ast, call_nodes, var_accesses = result
     except Exception as e:
-        utils.errorp(e)
-        utils.fail(1)
-    
-    if ast.error:
-        utils.errorp(ast.error)
-        utils.fail(1)
-    
-    init = ""
-    init += "mov [true], 1\n"
-    init += "mov [false], 0\n\n"
-    
-    for text in BUILTINS:
-        init += text
+        errorp(e)
+        sys.exit(1)
 
-    # dead code elimination
-    for node in ast.node:
+    init_code = ""
+    init_code += "mov [true], 1\n"
+    init_code += "mov [false], 0\n\n"
+    init_code += "\n".join(BUILTINS)
+
+    for node in ast.node[:]:
         if isinstance(node, nodes.FuncDefNode):
-            if not node.func_name_tok.value in call_nodes \
-                and not node.func_name_tok.value in var_accesses:
+            if node.func_name_tok.value not in call_nodes and node.func_name_tok.value not in var_accesses:
                 ast.node.remove(node)
-    
-    #try:
-    cdgen = codegen.Codegen()
-    result = cdgen.emit(ast.node)
-    result, error = result.value, result.error
-    #except Exception as e:
-    #    utils.errorp(e)
-    #    utils.fail(1)
-    
+
+    try:
+        cdgen = codegen.Codegen()
+        result = cdgen.emit(ast.node)
+        result, error = result.value, result.error
+    except Exception as e:
+        errorp(e)
+        sys.exit(1)
+
     if error:
-        utils.errorp(error)
-        utils.fail(1)
-    
-    result = init + cdgen.hoisted_definitions + result
-    
-    with open(out + ".as", "w") as o:
+        errorp(error)
+        sys.exit(1)
+
+    result = init_code + cdgen.hoisted_definitions + result
+
+    with open(output_file + '.as', "w") as o:
         o.write(result)
         
     try:
-        assemble(out + ".as")
+        assemble(output_file + ".as", output_file + ".asb", silent)
     except Exception as e:
-        utils.errorp(e)
-        utils.fail(1)
-    
-    if run:
-        cmd(f'..\\..\\bin\\Debug\\net5.0\\Alphassembly.exe {output}')
+        errorp(e)
+        sys.exit(1)
 
-compile()
+    if run:
+        cmd = f'..\\..\\bin\\Debug\\net6.0\\Alphassembly.exe {output_file}.asb'
+        if not silent:
+            log(f"[CMD] {cmd}")
+        os.system(cmd)
+
+
+def main():
+    args = parse_arguments()
+
+    input_file = args.file
+    output_file = args.output if args.output else "a"
+    include_paths = args.include or ['.\\', '.\\std\\']
+    silent = args.silent
+    run = args.run
+
+    compile_file(input_file, output_file, include_paths, silent, run)
+
+
+if __name__ == '__main__':
+    main()
