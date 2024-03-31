@@ -132,6 +132,8 @@ class Parser:
             res.register_advancement()
             self.advance()
             
+            inheritances = []
+            
             class_name = self.current_tok
             if not class_name.type == TT_IDENTIFIER:
                 return res.failure(InvalidSyntaxError(
@@ -141,6 +143,41 @@ class Parser:
             
             res.register_advancement()
             self.advance()
+            
+            if self.current_tok.type == TT_LPAREN:
+                res.register_advancement()
+                self.advance()
+                
+                if not self.current_tok.matches(TT_KEYWORD, "class"):
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end,
+                        f"Expected class but got {self.current_tok.value}"
+                        ))
+                
+                res.register_advancement()
+                self.advance()
+                
+                if not self.current_tok.type == TT_IDENTIFIER:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end,
+                        f"Expected identifier but got {self.current_tok.value}"
+                        ))
+                
+                inheritances.append(self.current_tok.value)
+                
+                res.register_advancement()
+                self.advance()
+                
+                # TODO: Make it so you can inherit multiple classes with ","
+                # example class A(class B, class C):
+                if not self.current_tok.type == TT_RPAREN:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end,
+                        f"Expected ')' but got {self.current_tok.value}"
+                        ))
+                
+                res.register_advancement()
+                self.advance()
             
             if self.current_tok.type == TT_DCOLON:
                 res.register_advancement()
@@ -155,10 +192,13 @@ class Parser:
                 res.register_advancement()
                 self.advance()
                 
+                base_name = class_name.value
+                if len(inheritances) > 0:
+                    base_name = inheritances[0]
                 properties = [(StringNode(Token(TT_STRING, '.type',
                                                 self.current_tok.pos_start,
                                                 self.current_tok.pos_end)),
-                                                StringNode(Token(TT_STRING, 'object',
+                                                StringNode(Token(TT_STRING, base_name,
                                                                  self.current_tok.pos_start,
                                                                  self.current_tok.pos_end)))]
                 
@@ -230,10 +270,12 @@ class Parser:
                                                    ListNode(properties,
                                                                         pos_start=self.current_tok.pos_start,
                                                                         pos_end=self.current_tok.pos_end),
-                                                    ListNode(methods,
+                                                   ListNode(methods,
                                                                         pos_start=self.current_tok.pos_start,
-                                                                        pos_end=self.current_tok.pos_end)))
+                                                                        pos_end=self.current_tok.pos_end),
+                                                   inheritances))
             
+            #this used to be res.success(ClassNode(class_name, inheritances)) but it returns an error (too many arguments)
             return res.success(ClassNode(class_name))
         
         expr = res.register(self.expr())

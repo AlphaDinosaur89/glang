@@ -1,6 +1,12 @@
 include "io.glg"
+include "types.glg"
 
 class Animal:
+    test
+    def constructor(this, val):
+        var this.test = val
+    end
+
     def sound(this):
         println("The animal makes a sound")
     end
@@ -8,6 +14,11 @@ end
 
 class Dog(class Animal):
     def bark(this):
-        this.sound()
+        println(this.test)
+        #this.sound()
     end
 end
+
+var a = new(class Dog, "balls")
+
+a.bark()

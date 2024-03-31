@@ -195,18 +195,19 @@ class UnaryOpNode:
 
 
 class ClassNode:
-    def __init__(self, var_name_tok, inheritances=None):
+    def __init__(self, var_name_tok):
         self.var_name_tok = var_name_tok
-        self.inheritances = inheritances
         
         self.pos_start = self.var_name_tok.pos_start
         self.pos_end = self.pos_start
 
+
 class ClassAssignNode:
-    def __init__(self, var_name_tok, properties, methods=None):
+    def __init__(self, var_name_tok, properties, methods=None, inheritances=None):
         self.var_name_tok = var_name_tok
         self.value_node = properties
-        self.methods = methods 
+        self.methods = methods
+        self.inheritances = inheritances
 
         self.pos_start = self.var_name_tok.pos_start
         self.pos_end = self.value_node.pos_end

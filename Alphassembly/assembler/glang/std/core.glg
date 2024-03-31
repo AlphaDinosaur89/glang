@@ -24,6 +24,7 @@ def setattr(variable, attr, value):
     asm_push(variable)
     asm_push(attr)
 
+    # does not return a new object
     return asm_bcall(17)
 end
 

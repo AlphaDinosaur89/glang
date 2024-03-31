@@ -910,13 +910,50 @@ class Codegen:
         
         return res.success(output)
 
+    # inheriting more than 1 class is still not supported!
     def emit_ClassAssignNode(self, node):
         res = CTResult()
         output = ""
-        
+        #print(f"Inheritances: {node.inheritances}") #TODO: make inheritance work n stuff
         class_name = node.var_name_tok.value
         self.class_definitions[class_name] = node.value_node.element_nodes
         
+        # inherit and override variables
+        var_list = []
+        if node.value_node.element_nodes:
+            for var in node.value_node.element_nodes:
+                if var[0].tok.value == '.type':
+                    continue
+                var_list.append(var[0].tok.value)
+        
+        #print("var_list:", var_list)
+        
+        #print(f"value_node: {node.value_node.element_nodes}")
+        
+        for inheritance in node.inheritances:
+            vars = self.class_definitions[inheritance]
+            for var in vars:
+                if var[0].tok.value == '.type' or var[0].tok.value in var_list:
+                    continue
+                self.class_definitions[class_name].append(var)
+        
         self.class_definitions[f'.{class_name}methods'] = node.methods
+        
+        # override method
+        method_list = []
+        if node.methods.element_nodes:
+            for method in node.methods.element_nodes:
+                method_list.append(method.func_name_tok.value)
+        
+        #print("method_list:", method_list)
+        # inherit methods
+        for inheritance in node.inheritances:
+            klass = self.class_definitions[f'.{inheritance}methods']
+            for method in klass.element_nodes:
+                if method.func_name_tok.value in method_list:
+                    continue
+                self.class_definitions[f'.{class_name}methods'].element_nodes.append(method)
+        
+        #print(self.class_definitions[f'.{class_name}methods'].element_nodes)
 
         return res.success(output)
