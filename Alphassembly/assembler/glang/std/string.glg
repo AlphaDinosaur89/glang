@@ -23,7 +23,7 @@ def substring(str, start, end_):
 
     var result = ""
 	for i = start to end_:
-		var result = result + getat(str, i)
+		var result = result + str[i]
 	end
     
 	if type(str) == types.ptr:
@@ -54,7 +54,7 @@ def lastIndexOf(str, search):
     if len(matches) == 0:
         return -1
     else:
-        return getat(matches, len(matches)-1)
+        return matches[len(matches)-1]
     end
 end
 
@@ -85,7 +85,7 @@ def toUpperCase(d):
 	var a = ord('a')
 	var z = ord('z')
 	for i = 0 to count:
-		var e = ord(getat(d, i))
+		var e = ord(d[i])
 		var e = e - 32 * (e >= a and e <= z)
 		var string = string + char(e)
 	end
@@ -99,7 +99,7 @@ def toLowerCase(d):
     var A = ord('A')
     var Z = ord('Z')
     for i = 0 to count:
-        var e = ord(getat(d, i))
+        var e = ord(d[i])
         var e = e + 32 * (e >= A and e <= Z)
         var string = string + char(e)
     end
@@ -111,7 +111,7 @@ def reverse(str):
     var ret = ''
 
     for i = len(str)-1 to -1 step -1:
-        var ret = ret + getat(str, i)
+        var ret = ret + str[i]
     end
 
     return ret
@@ -130,7 +130,7 @@ def split(str, delimiter):
 	for i = 0 to iter:
 		var sample = ""
 		for x = i to i + len_:
-			var sample = sample + getat(str, x)
+			var sample = sample + str[x]
 		end
 	
 		var isSplit = sample == delimiter
@@ -142,9 +142,9 @@ def split(str, delimiter):
 			append(*arr, "")
 		else:
 			if isEnded:
-				setat(*arr, idx, getat(arr, idx) + sample)
+				setat(*arr, idx, arr[idx] + sample)
 			else:				
-				setat(*arr, idx, getat(arr, idx) + getat(str, i))
+				setat(*arr, idx, arr[idx] + str[i])
 			end
 		end
 	end

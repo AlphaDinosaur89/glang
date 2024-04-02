@@ -1,5 +1,4 @@
 include "asm.glg"
-include "list.glg"
 
 var argv = asm_bcall(ARGV_VALUE)
 

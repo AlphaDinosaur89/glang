@@ -31,7 +31,7 @@ def tolist(value):
     var tmp = []
     if type(value) == types.str:
         for i = 0 to len(value):
-            append(*tmp, getat(value, i))
+            append(*tmp, value[i])
         end
     end
     return tmp

@@ -212,3 +212,12 @@ class ClassAssignNode:
         self.pos_start = self.var_name_tok.pos_start
         self.pos_end = self.value_node.pos_end
 
+
+class ListAccessNode:
+    def __init__(self, left_node, access_node):
+        self.left_node = left_node
+        self.access_node = access_node
+        
+        self.pos_start = self.left_node.pos_start
+        self.pos_end = self.access_node.pos_end
+

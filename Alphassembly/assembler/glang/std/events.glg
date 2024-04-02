@@ -55,7 +55,7 @@ class EventEmitter:
             return 0
         end
         for i = 0 to len(events):
-            var event = getat(events, i)
+            var event = events[i]
             if event.name == name:
                 return events
             end
@@ -73,7 +73,7 @@ class EventEmitter:
         end
 
         for i = 0 to len(evnt):
-            var fn = getat(evnt, i)
+            var fn = evnt[i]
             var fn = fn.function
             if fn == 0:
                 continue

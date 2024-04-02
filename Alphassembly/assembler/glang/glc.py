@@ -127,6 +127,9 @@ def compile_file(input_file, output_file, include_paths, silent, run):
             errorp(result.error)
             sys.exit(1)
         ast, call_nodes, var_accesses = result
+        if ast.error:
+            errorp(ast.error)
+            sys.exit(1)
     except Exception as e:
         errorp(e)
         sys.exit(1)

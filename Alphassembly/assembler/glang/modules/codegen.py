@@ -957,3 +957,20 @@ class Codegen:
         #print(self.class_definitions[f'.{class_name}methods'].element_nodes)
 
         return res.success(output)
+    
+    def emit_ListAccessNode(self, node):
+        res = CTResult()
+        output = ""
+        
+        output += res.register(self.emit(node.access_node))
+        if res.error: return res
+        output += "push ax\n"
+        
+        output += res.register(self.emit(node.left_node))
+        if res.error: return res
+        output += "push ax\n"
+        
+        output += "mov ax, 6\n"
+        output += "bcall\n"
+        
+        return res.success(output)

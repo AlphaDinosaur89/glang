@@ -40,7 +40,7 @@ def getrange(list, start, endn):
 	
 	var l = []
 	for i = start to endn+1:
-		var l = append(l, getat(list, i))
+		var l = append(l, list[i])
 	end
 	
 	return l
@@ -57,14 +57,14 @@ def contains(val, val2):
 			var b = val2
 			
 			for i = 0 to len(b):
-				if getat(b, i) == a:
+				if b[i] == a:
 					return true
 				end
 			end
 		end
 	elif type(val) == types.list:
 		for i = 0 to len(val):
-			var a = getat(val, i)
+			var a = val[i]
 			if a == val2:
 				return true
 			end

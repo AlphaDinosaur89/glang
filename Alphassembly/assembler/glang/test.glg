@@ -1,24 +1,5 @@
-include "io.glg"
-include "types.glg"
+# cant print lists: need to fix this
 
-class Animal:
-    test
-    def constructor(this, val):
-        var this.test = val
-    end
+var identifier = [1, [2, 3]]
 
-    def sound(this):
-        println("The animal makes a sound")
-    end
-end
-
-class Dog(class Animal):
-    def bark(this):
-        println(this.test)
-        #this.sound()
-    end
-end
-
-var a = new(class Dog, "balls")
-
-a.bark()
+print((identifier[1])[1])

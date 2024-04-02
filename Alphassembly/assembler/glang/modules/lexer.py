@@ -228,15 +228,15 @@ class Lexer:
         tokens = []
         postokens = []
 
-        while self.current_char != None and self.current_char in LETTERS_DIGITS + '_[]':
-            if self.current_char == '[':
-                postokens.append(Token(TT_LSQUARE, pos_start=pos_start))
-                self.advance()
-                continue
-            elif self.current_char == ']':
-                postokens.append(Token(TT_RSQUARE, pos_start=pos_start))
-                self.advance()
-                continue
+        while self.current_char != None and self.current_char in LETTERS_DIGITS + '_':
+            #if self.current_char == '[':
+            #    postokens.append(Token(TT_LSQUARE, pos_start=pos_start))
+            #    self.advance()
+            #    continue
+            #elif self.current_char == ']':
+            #    postokens.append(Token(TT_RSQUARE, pos_start=pos_start))
+            #    self.advance()
+            #    continue
             id_str += self.current_char
             self.advance()
 

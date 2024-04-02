@@ -95,16 +95,15 @@ class Parser:
             expr = None
 
             if self.current_tok.type == TT_DOT:
-                if self.current_tok.type == TT_DOT:
-                    left = var_name
-                    op_tok = self.current_tok
-                    
-                    res.register_advancement()
-                    self.advance()
-                    right = res.register(self.call())
-                    if res.error: return res
-            
-                    var_name = BinOpNode(StringNode(left), op_tok, right)
+                left = var_name
+                op_tok = self.current_tok
+                
+                res.register_advancement()
+                self.advance()
+                right = res.register(self.call())
+                if res.error: return res
+        
+                var_name = BinOpNode(StringNode(left), op_tok, right)
             
             if self.current_tok.type != TT_EQ:
                 return res.failure(InvalidSyntaxError(
@@ -382,7 +381,8 @@ class Parser:
 
                 res.register_advancement()
                 self.advance()
-            node = CallNode(atom, arg_nodes)
+            
+            node = CallNode(atom, arg_nodes) # expects identifiers make it so you can call anything
             self.call_nodes.append(node.node_to_call.var_name_tok.value)\
                 if not node.node_to_call.var_name_tok.value in self.call_nodes else None in self.call_nodes
             return res.success(node)
@@ -396,6 +396,27 @@ class Parser:
             if res.error: return res
             
             return res.success(BinOpNode(left, op_tok, right))
+        elif self.current_tok.type == TT_LSQUARE: # TODO: make it so this can be a dict access aswell
+            # NOTE: you cant do something like this foo[0][1] but it will work with (foo[0])[1] (idk how to fix ngl)
+            # same with function calls, for it to work you have to do this (foo())[0]
+            # TODO: figure out how to fix this
+            # yet another TODO: Make it so you can assign values to lists with this syntax var balls[0] = 1
+            res.register_advancement()
+            self.advance()
+            
+            access = res.register(self.arith_expr())
+            if res.error: return res
+            
+            if self.current_tok.type != TT_RSQUARE:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    "Expected ']'"
+                ))
+            
+            res.register_advancement()
+            self.advance()
+                        
+            return res.success(ListAccessNode(atom, access))
         
         return res.success(atom)
 
