@@ -1,5 +1,3 @@
-# cant print lists: need to fix this
+var identifier = [1, [2, "three"]]
 
-var identifier = [1, [2, 3]]
-
-print((identifier[1])[1])
+print((identifier[1]))

@@ -340,7 +340,7 @@ namespace Alphassembly
             }
 
             // Create a new List<Value_t> from the List<Integer_t>
-            List<Value_t> vl = ((List<Integer_t>)Value).Select(i => (Value_t)i).ToList();
+            List<Value_t> vl = ((List<Value_t>)Value).Select(i => (Value_t)i).ToList();
 
             for (int i = 0; i < vl.Count; i++)
             {
