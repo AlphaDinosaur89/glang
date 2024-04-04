@@ -142,9 +142,9 @@ def split(str, delimiter):
 			append(*arr, "")
 		else:
 			if isEnded:
-				setat(*arr, idx, arr[idx] + sample)
+				var arr[idx] = arr[idx] + sample
 			else:				
-				setat(*arr, idx, arr[idx] + str[i])
+				var arr[idx] = arr[idx] + str[i]
 			end
 		end
 	end

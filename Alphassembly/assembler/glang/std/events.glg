@@ -80,7 +80,7 @@ class EventEmitter:
             end
             fn(args)
             if fn.once:
-                var evnt = setat(evnt, i, 0)
+                var evnt[i] = 0
                 # replace this to delete instead of nullifying
                 setattr(this.events, event, evnt)
             end

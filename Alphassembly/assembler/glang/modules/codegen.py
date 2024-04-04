@@ -974,3 +974,21 @@ class Codegen:
         output += "bcall\n"
         
         return res.success(output)
+    
+    def emit_ListVarAssignNode(self, node):
+        res = CTResult()
+        output = ""
+        
+        output += res.register(self.emit(node.value_node))
+        if res.error: return res
+        output += "push ax\n"
+        
+        output += res.register(self.emit(node.access_node))
+        if res.error: return res
+        output += "push ax\n"
+        
+        output += f"push [{node.var_name.value}]\n"
+        output += "mov ax, 7\n"
+        output += "bcall\n"
+        
+        return res.success(output)

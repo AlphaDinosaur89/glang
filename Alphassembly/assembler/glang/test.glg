@@ -1,3 +1,5 @@
-var identifier = [1, [2, "three"]]
+include "string.glg"
 
-print((identifier[1]))
+var str = "Co cK"
+
+print(split(str, ' '))

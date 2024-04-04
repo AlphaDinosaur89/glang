@@ -105,6 +105,38 @@ class Parser:
         
                 var_name = BinOpNode(StringNode(left), op_tok, right)
             
+            if self.current_tok.type == TT_LSQUARE:
+                left = var_name
+                
+                res.register_advancement()
+                self.advance()
+                
+                access = res.register(self.arith_expr())
+                if res.error: return res
+                
+                if self.current_tok.type != TT_RSQUARE:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end,
+                        "Expected ']'"
+                    ))
+                
+                res.register_advancement()
+                self.advance()
+                
+                if self.current_tok.type != TT_EQ:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end,
+                        "Expected '='"
+                    ))
+                
+                res.register_advancement()
+                self.advance()
+                
+                value = res.register(self.expr())
+                if res.error: return res
+                
+                return res.success(ListVarAssignNode(left, access, value))
+                            
             if self.current_tok.type != TT_EQ:
                 return res.failure(InvalidSyntaxError(
                     self.current_tok.pos_start, self.current_tok.pos_end,
