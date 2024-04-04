@@ -1,5 +1,6 @@
-include "string.glg"
+var identifier = [1, [2, "three"]]
 
-var str = "Co cK"
+var identifier[0] = 0
 
-print(split(str, ' '))
+print(identifier)
+
