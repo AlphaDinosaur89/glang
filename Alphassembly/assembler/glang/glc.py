@@ -1,6 +1,7 @@
 import argparse
 import sys
 import os
+import traceback
 
 from modules import lexer, _parser, codegen, nodes
 from modules.errors import Error
@@ -104,6 +105,7 @@ def compile_file(input_file, output_file, include_paths, silent, run):
             errorp(error)
             sys.exit(1)
     except Exception as e:
+        print(traceback.format_exc())
         errorp(e)
         sys.exit(1)
 
@@ -113,6 +115,7 @@ def compile_file(input_file, output_file, include_paths, silent, run):
             errorp(error)
             sys.exit(1)
     except Exception as e:
+        print(traceback.format_exc())
         errorp(e)
         sys.exit(1)
     
@@ -131,6 +134,7 @@ def compile_file(input_file, output_file, include_paths, silent, run):
             errorp(ast.error)
             sys.exit(1)
     except Exception as e:
+        print(traceback.format_exc())
         errorp(e)
         sys.exit(1)
 
@@ -149,6 +153,7 @@ def compile_file(input_file, output_file, include_paths, silent, run):
         result = cdgen.emit(ast.node)
         result, error = result.value, result.error
     except Exception as e:
+        print(traceback.format_exc())
         errorp(e)
         sys.exit(1)
 
@@ -164,6 +169,7 @@ def compile_file(input_file, output_file, include_paths, silent, run):
     try:
         assemble(output_file + ".as", output_file + ".asb", silent)
     except Exception as e:
+        print(traceback.format_exc())
         errorp(e)
         sys.exit(1)
 

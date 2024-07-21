@@ -29,6 +29,12 @@ class InvalidSyntaxError(Error):
         super().__init__(pos_start, pos_end, 'Invalid Syntax', details)
 
 
+class ISyntaxError(Error):
+    def __init__(self, pos_start, pos_end, details=''):
+        super().__init__(pos_start, pos_end, 'Invalid Syntax', details)
+
+
+
 class CTError(Error):
     def __init__(self, pos_start, pos_end, details=''):
         super().__init__(pos_start, pos_end, 'Compile time error', details)

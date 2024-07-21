@@ -1,3 +1,5 @@
+from .errors import *
+
 class ParseResult:
     def __init__(self):
         self.error = None
@@ -13,7 +15,7 @@ class ParseResult:
     def try_register(self, res):
         if res.error:
             self.to_reverse_count = res.advance_count
-            return None
+            return None if type(res.error) is InvalidSyntaxError else self.register(res)
         return self.register(res)
 
     def register(self, res):

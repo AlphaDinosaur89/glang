@@ -231,3 +231,9 @@ class ListVarAssignNode:
         self.pos_start = self.var_name.pos_start
         self.pos_end = self.access_node.pos_end
 
+
+class DictNode:
+    def __init__(self, dic, pos_start, pos_end):
+        self.dic = dic
+        self.pos_start = pos_start
+        self.pos_end = pos_end

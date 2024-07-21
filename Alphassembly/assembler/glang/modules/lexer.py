@@ -51,7 +51,7 @@ class Lexer:
                 self.advance()
             elif self.current_char in DIGITS:
                 tokens.append(self.make_number())
-            elif self.current_char in LETTERS:
+            elif self.current_char in LETTERS + '_':
                 toks = self.make_identifier()
                 for tok in toks:
                     tokens.append(tok)
@@ -110,6 +110,12 @@ class Lexer:
                 self.advance()
             elif self.current_char == ']':
                 tokens.append(Token(TT_RSQUARE, pos_start=self.pos))
+                self.advance()
+            elif self.current_char == '{':
+                tokens.append(Token(TT_LCURLY, pos_start=self.pos))
+                self.advance()
+            elif self.current_char == '}':
+                tokens.append(Token(TT_RCURLY, pos_start=self.pos))
                 self.advance()
             elif self.current_char == ':':
                 tokens.append(Token(TT_DCOLON, pos_start=self.pos))

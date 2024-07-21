@@ -9,6 +9,7 @@ class types:
 	ptr = "ptr"
 	object = "object"
 	function = "function"
+    dict = "dict"
 end
 
 var types = new(class types)

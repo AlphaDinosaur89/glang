@@ -1,0 +1,92 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4578750F-E253-4EBC-9F7F-3C8D11AD8926}|Alphassembly\\Alphassembly.csproj|c:\\users\\gamed\\documents\\projs\\alphassembly\\alphassembly\\alphassembly\\builtinfunctions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4578750F-E253-4EBC-9F7F-3C8D11AD8926}|Alphassembly\\Alphassembly.csproj|solutionrelative:alphassembly\\builtinfunctions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4578750F-E253-4EBC-9F7F-3C8D11AD8926}|Alphassembly\\Alphassembly.csproj|c:\\users\\gamed\\documents\\projs\\alphassembly\\alphassembly\\alphassembly\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4578750F-E253-4EBC-9F7F-3C8D11AD8926}|Alphassembly\\Alphassembly.csproj|solutionrelative:alphassembly\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{10AF04EF-B48B-4C51-BEBC-01B79F576202}|AlphassemblyRaylib\\AlphassemblyRaylib.csproj|c:\\users\\gamed\\documents\\projs\\alphassembly\\alphassembly\\alphassemblyraylib\\alphassemblyraylib.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{10AF04EF-B48B-4C51-BEBC-01B79F576202}|AlphassemblyRaylib\\AlphassemblyRaylib.csproj|solutionrelative:alphassemblyraylib\\alphassemblyraylib.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91494A6A-FA00-4D9F-AFA2-571AF7252AC6}|ExampleModule\\ExampleModule.csproj|c:\\users\\gamed\\documents\\projs\\alphassembly\\alphassembly\\examplemodule\\examplemodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{91494A6A-FA00-4D9F-AFA2-571AF7252AC6}|ExampleModule\\ExampleModule.csproj|solutionrelative:examplemodule\\examplemodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AlphassemblyRaylib.cs",
+              "DocumentMoniker": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\AlphassemblyRaylib\\AlphassemblyRaylib.cs",
+              "RelativeDocumentMoniker": "AlphassemblyRaylib\\AlphassemblyRaylib.cs",
+              "ToolTip": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\AlphassemblyRaylib\\AlphassemblyRaylib.cs",
+              "RelativeToolTip": "AlphassemblyRaylib\\AlphassemblyRaylib.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAGYAAAA7AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-07-23T15:21:22.895Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ExampleModule.cs",
+              "DocumentMoniker": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\ExampleModule\\ExampleModule.cs",
+              "RelativeDocumentMoniker": "ExampleModule\\ExampleModule.cs",
+              "ToolTip": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\ExampleModule\\ExampleModule.cs",
+              "RelativeToolTip": "ExampleModule\\ExampleModule.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAA3AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-07-22T18:31:48.868Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\Alphassembly\\Program.cs",
+              "RelativeDocumentMoniker": "Alphassembly\\Program.cs",
+              "ToolTip": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\Alphassembly\\Program.cs",
+              "RelativeToolTip": "Alphassembly\\Program.cs",
+              "ViewState": "AQIAAH4CAAAAAAAAAAAjwI4CAAA8AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-07-20T15:15:44.801Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BuiltinFunctions.cs",
+              "DocumentMoniker": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\Alphassembly\\BuiltinFunctions.cs",
+              "RelativeDocumentMoniker": "Alphassembly\\BuiltinFunctions.cs",
+              "ToolTip": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\Alphassembly\\BuiltinFunctions.cs",
+              "RelativeToolTip": "Alphassembly\\BuiltinFunctions.cs",
+              "ViewState": "AQIAAKwBAAAAAAAAAAAjwMABAAAeAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-06-20T19:05:59.611Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

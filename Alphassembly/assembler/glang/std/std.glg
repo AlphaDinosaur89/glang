@@ -12,6 +12,7 @@ include "core.glg"
 include "requests.glg"
 include "time.glg"
 include "events.glg"
+include "dict.glg"
 #include "socket.glg" not implemented yet
 
 # make so all of the asm_bcall ids be constants

@@ -1,6 +1,19 @@
-var identifier = [1, [2, "three"]]
+include "io.glg"
+include "conversion.glg"
+include "dict.glg"
 
-var identifier[0] = 0
+var d = {
+    "balls":10, 
+    'c': {
+        "test": 'okay',
+        "The balls!": 62
+    }
+}
 
-print(identifier)
+println(dict.keys(d))
+println(dict.values(d))
+println(str(d))
 
+println(d['balls'])
+var d['balls'] = 9
+println(d['balls'])

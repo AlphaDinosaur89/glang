@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "PKfUTfQ9nRsn9JE5hG1W6xCcCuTMUKBT4WOzh1HT5lZx/K/5FbbQfEKpuCAl6FBV8v6YNw8wS34AZK2beFlfUA==",
+  "dgSpecHash": "bTg471mCSL0=",
   "success": true,
   "projectFilePath": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\ExampleModule\\ExampleModule.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\gamed\\.nuget\\packages\\raylib-cs\\4.5.0.2\\raylib-cs.4.5.0.2.nupkg.sha512",
-    "C:\\Users\\gamed\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512"
+    "C:\\Users\\gamed\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
+    "C:\\Users\\gamed\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.32\\microsoft.windowsdesktop.app.ref.6.0.32.nupkg.sha512",
+    "C:\\Users\\gamed\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.32\\microsoft.netcore.app.ref.6.0.32.nupkg.sha512",
+    "C:\\Users\\gamed\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.32\\microsoft.aspnetcore.app.ref.6.0.32.nupkg.sha512"
   ],
   "logs": []
 }

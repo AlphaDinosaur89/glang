@@ -62,7 +62,6 @@ class Codegen:
         # TODO: implement this
         output = ""
         
-        
         length = len(node.element_nodes)
         
         variables = []
@@ -256,6 +255,14 @@ class Codegen:
         if type(node.right_node) is CallNode:            
             output += f'mov ax, "{node.right_node.node_to_call.var_name_tok.value}"\n'
             output += 'push ax\n'
+        elif type(node.right_node) is ListAccessNode:
+            s = ''
+            if type(node.right_node.left_node) is CallNode:
+                s = node.right_node.left_node.node_to_call.var_name_tok.value
+            else:
+                s = node.right_node.left_node.var_name_tok.value
+            output += f'mov ax, "{s}"\n'
+            output += f'push ax\n'
         elif type(node.right_node) is not BinOpNode:
             output += f'mov ax, "{node.right_node.var_name_tok.value}"\n'
             output += f'push ax\n'
@@ -370,6 +377,37 @@ class Codegen:
                 # this pushes the object onto the stack
                 output += 'push ax\n'
                 output += f'call [.V{tempvar}]\n'
+            elif type(node.right_node) is ListAccessNode:
+                var1 = self.var_idx
+                self.var_idx += 1
+                output += f'mov [.V{var1}], ax\n'
+        
+                output += res.register(self.emit(node.right_node.access_node))
+                
+                if res.error: return res
+                output += "push ax\n"
+                
+                if type(node.right_node.left_node) is CallNode:
+                    var = self.var_idx
+                    self.var_idx += 1
+                    for arg in node.right_node.left_node.arg_nodes[::-1]:
+                        output += res.register(self.emit(arg))
+                        if res.error: return res
+                        output += 'push ax\n'
+                        
+                    output += res.register(self.emit(node.left_node))
+                    if res.error: return res
+                    
+                    # this pushes the object onto the stack
+                    output += 'push ax\n'
+                    
+                    output += f'call [.V{var1}]\n'
+                 
+                output += "push ax\n"
+                
+                output += "mov ax, 6\n"
+                output += "bcall\n"
+                
         elif node.op_tok.type == TT_PLUS:
             output += "add ax, sp\n"
             output += "pop\n"
@@ -692,6 +730,7 @@ class Codegen:
         output += f".L{l2}:\n"
         output += f"cmp [{var_name}] < [.V{end_value}]\n"
         output += f"jt .L{l0}\n"
+        output += f"jmp .L{break_label}\n"
         output += f".L{l3}:\n"
         output += f"cmp [{var_name}] > [.V{end_value}]\n"
         output += f"jt .L{l0}\n"
@@ -962,6 +1001,20 @@ class Codegen:
         res = CTResult()
         output = ""
         
+        if type(node.access_node) is StringNode:
+            output += res.register(self.emit(node.left_node))
+            if res.error: return res
+            output += 'push ax\n'
+            
+            output += res.register(self.emit(node.access_node))
+            if res.error: return res
+            output += 'push ax\n'
+            
+            output += 'mov ax, 18\n'
+            output += "bcall\n"
+            
+            return res.success(output)
+        
         output += res.register(self.emit(node.access_node))
         if res.error: return res
         output += "push ax\n"
@@ -979,6 +1032,23 @@ class Codegen:
         res = CTResult()
         output = ""
         
+        if type(node.access_node) is StringNode:
+            output += res.register(self.emit(node.value_node))
+            if res.error: return res
+            output += "push ax\n"
+            
+            output += f'mov ax, [{node.var_name.value}]\n'
+            output += 'push ax\n'
+            
+            output += res.register(self.emit(node.access_node))
+            if res.error: return res
+            output += 'push ax\n'
+            
+            output += 'mov ax, 17\n'
+            output += "bcall\n"
+            
+            return res.success(output)
+        
         output += res.register(self.emit(node.value_node))
         if res.error: return res
         output += "push ax\n"
@@ -990,5 +1060,101 @@ class Codegen:
         output += f"push [{node.var_name.value}]\n"
         output += "mov ax, 7\n"
         output += "bcall\n"
+        
+        return res.success(output)
+    
+    def setr(self, variable, attr):
+        # setattr
+        output = ''
+        #value
+        #variable
+        #attr
+        
+        #value
+        output += 'push ax\n'
+        
+        #variable
+        output += f'mov ax, [.V{variable}]\n'
+        output += 'push ax\n'
+        
+        #attr
+        output += f'mov ax, "{attr}"\n'
+        output += 'push ax\n'
+        
+        output += 'mov ax, 17\n'
+        output += "bcall\n"
+        
+        return output
+    
+    def getr(self, variable, attr):
+        # getattr
+        output = ''
+        #variable
+        #attr
+        
+        #variable
+        output += f'mov ax, [.V{variable}]\n'
+        output += 'push ax\n'
+        
+        #attr
+        output += f'mov ax, "{attr}"\n'
+        output += 'push ax\n'
+        
+        output += 'mov ax, 18\n'
+        output += "bcall\n"
+        
+        return output
+    
+    def emit_DictNode(self, node):
+        res = CTResult()
+        output = ""
+        var = self.var_idx
+        self.var_idx += 1
+        
+        #if node.dic == {}:
+        #    output += 'mov ax, "{}"'
+        #    return res.success(output)
+        
+        output += f'mov [.V{var}], "dict"\n'
+        output += f'mov ax, "dict"\n'
+        output += self.setr(var, '.type')
+        
+        keys = 'mov ax, {'
+        values = 'mov ax, {'
+        i = 0
+        for key in node.dic.keys():
+        
+            var1 = self.var_idx
+            self.var_idx += 1
+            output += f'mov [.V{var1}], "{key}"\n'
+            keys += f'[.V{var1}]'
+            
+            if not i == len(node.dic.keys())-1:
+                keys += ', '
+                
+            output += res.register(self.emit(node.dic[key]))
+            if res.error: return res
+            
+            var1 = self.var_idx
+            self.var_idx += 1
+            output += f'mov [.V{var1}], ax\n'
+            
+            values += f'[.V{var1}]'
+            if not i == len(node.dic.values())-1:
+                values += ', '
+            
+            output += self.setr(var, key)
+            
+            i += 1
+        
+        keys += '}\n'
+        values += '}\n'
+        output += keys
+        output += self.setr(var, '.keys')
+        
+        output += values
+        output += self.setr(var, '.values')
+        
+        output += f'mov ax, [.V{var}]\n'
         
         return res.success(output)

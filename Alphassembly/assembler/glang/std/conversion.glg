@@ -1,6 +1,8 @@
 include "asm.glg"
 include "types.glg"
 include "list.glg"
+include "dict.glg"
+include "io.glg"
 
 def int(value):
     asm_push(value)
@@ -13,6 +15,17 @@ def float(value):
 end
 
 def str(value):
+    if type(value) == types.dict:
+        var s = '{'
+        for i = 0 to len(dict.keys(value)) step 1:
+            var _ = dict.keys(value)
+            var s = s + "'" + str(dict.keys(value)[i]) + "'" + ':'
+            var s = s + str(dict.values(value)[i])
+            if i != len(dict.keys(value))-1: var s = s + ', '
+        end
+        var s = s + '}'
+        return s
+    end
     asm_push(value)
     return asm_bcall(4)
 end
