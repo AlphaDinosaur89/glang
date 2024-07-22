@@ -354,7 +354,7 @@ class Parser:
             res.register_advancement()
             self.advance()
             return res.success(UnaryOpNode(tok, factor))
-        if tok.type in (TT_PLUS, TT_MINUS, TT_MUL, TT_INC, TT_DEC):
+        if tok.type in (TT_PLUS, TT_MINUS, TT_MUL, TT_INC, TT_DEC) or tok.matches(TT_KEYWORD, 'not'):
             res.register_advancement()
             self.advance()
             if tok.type in (TT_INC, TT_DEC):                
@@ -391,6 +391,8 @@ class Parser:
 
                     arg_nodes.append(res.register(self.expr()))
                     if res.error: return res
+                
+                self.skip_newlines()
 
                 if self.current_tok.type != TT_RPAREN:
                     return res.failure(ISyntaxError(

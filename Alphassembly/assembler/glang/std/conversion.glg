@@ -15,17 +15,41 @@ def float(value):
 end
 
 def str(value):
+    # dict string literal builder
+    # this is python style because this is named dict afterall: 
+    # {'balls':10, 'c':{'test':'okay', 'The balls!':62}} instead of { balls: 10, c: { test: 'okay', 'The balls!': 62 } }
     if type(value) == types.dict:
         var s = '{'
-        for i = 0 to len(dict.keys(value)) step 1:
-            var _ = dict.keys(value)
-            var s = s + "'" + str(dict.keys(value)[i]) + "'" + ':'
-            var s = s + str(dict.values(value)[i])
-            if i != len(dict.keys(value))-1: var s = s + ', '
+        var keys = dict.keys(value)
+        var values = dict.values(value)
+        for i = 0 to len(keys) step 1:
+            var s = s + "'" + str(keys[i]) + "'" + ': '
+            if type(values[i]) == types.str:
+                var s = s + "'" + str(values[i]) + "'"
+            else:
+                var s = s + str(values[i])
+            end
+            if i != len(keys)-1: var s = s + ', '
         end
         var s = s + '}'
         return s
+    elif type(value) == types.list:
+        #list literal builder
+        var s = '['
+        for i = 0 to len(value) step 1:
+            if type(value[i]) == types.str:
+                var s = s + "'" + str(value[i]) + "'"
+            else:
+                var s = s + str(value[i])
+            end
+            if i != len(value)-1: var s = s + ', '
+        end
+        var s = s + ']'
+        return s
+    elif type(value) == types.function:
+        return 'function'
     end
+    
     asm_push(value)
     return asm_bcall(4)
 end

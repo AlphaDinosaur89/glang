@@ -53,5 +53,6 @@ KEYWORDS = [
     'def',
     'return',
     'include',
-    'class'
+    'class',
+    'not'
 ]

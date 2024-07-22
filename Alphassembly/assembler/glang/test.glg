@@ -1,14 +1,23 @@
 include "io.glg"
 include "conversion.glg"
 include "dict.glg"
+include "string.glg"
 
 var d = {
     "balls":10, 
     'c': {
         "test": 'okay',
-        "The balls!": 62
+        "The balls!": [62, 12, {
+            'hello': 'world'
+        }]
     }
 }
+
+# Make sure to add a self argument since when calling a function in a dict
+# since it uses the same syntax as you would call a method of a class
+dict.add(d, 'b', def test(self):
+    return "hi"
+end)
 
 println(dict.keys(d))
 println(dict.values(d))
@@ -17,3 +26,5 @@ println(str(d))
 println(d['balls'])
 var d['balls'] = 9
 println(d['balls'])
+
+println(d.b())

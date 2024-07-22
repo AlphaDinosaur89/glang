@@ -378,35 +378,65 @@ class Codegen:
                 output += 'push ax\n'
                 output += f'call [.V{tempvar}]\n'
             elif type(node.right_node) is ListAccessNode:
-                var1 = self.var_idx
-                self.var_idx += 1
-                output += f'mov [.V{var1}], ax\n'
-        
-                output += res.register(self.emit(node.right_node.access_node))
-                
-                if res.error: return res
-                output += "push ax\n"
-                
-                if type(node.right_node.left_node) is CallNode:
-                    var = self.var_idx
+                if not type(node.right_node.access_node) is StringNode:
+                    var1 = self.var_idx
                     self.var_idx += 1
-                    for arg in node.right_node.left_node.arg_nodes[::-1]:
-                        output += res.register(self.emit(arg))
+                    output += f'mov [.V{var1}], ax\n'
+            
+                    output += res.register(self.emit(node.right_node.access_node))
+                    
+                    if res.error: return res
+                    output += "push ax\n"
+                    
+                    if type(node.right_node.left_node) is CallNode:
+                        var = self.var_idx
+                        self.var_idx += 1
+                        for arg in node.right_node.left_node.arg_nodes[::-1]:
+                            output += res.register(self.emit(arg))
+                            if res.error: return res
+                            output += 'push ax\n'
+                            
+                        output += res.register(self.emit(node.left_node))
                         if res.error: return res
+                        
+                        # this pushes the object onto the stack
                         output += 'push ax\n'
                         
-                    output += res.register(self.emit(node.left_node))
+                        output += f'call [.V{var1}]\n'
+                     
+                    output += "push ax\n"
+                    
+                    output += "mov ax, 6\n"
+                    output += "bcall\n"
+                else:
+                    var1 = self.var_idx
+                    self.var_idx += 1
+                    output += f'mov [.V{var1}], ax\n'
+                    
+                    if type(node.right_node.left_node) is CallNode:
+                        var = self.var_idx
+                        self.var_idx += 1
+                        for arg in node.right_node.left_node.arg_nodes[::-1]:
+                            output += res.register(self.emit(arg))
+                            if res.error: return res
+                            output += 'push ax\n'
+                            
+                        output += res.register(self.emit(node.left_node))
+                        if res.error: return res
+                        
+                        # this pushes the object onto the stack
+                        output += 'push ax\n'
+                        
+                        output += f'call [.V{var1}]\n'
+                    
+                    output += "push ax\n"
+                    
+                    output += res.register(self.emit(node.right_node.access_node))
                     if res.error: return res
+                    output += "push ax\n"
                     
-                    # this pushes the object onto the stack
-                    output += 'push ax\n'
-                    
-                    output += f'call [.V{var1}]\n'
-                 
-                output += "push ax\n"
-                
-                output += "mov ax, 6\n"
-                output += "bcall\n"
+                    output += "mov ax, 18\n"
+                    output += "bcall\n"
                 
         elif node.op_tok.type == TT_PLUS:
             output += "add ax, sp\n"
@@ -564,6 +594,14 @@ class Codegen:
         elif node.op_tok.type == TT_DEC:
             output += f"sub [{node.node.var_name_tok.value}], 1\n"
             output += f"mov ax, [{node.node.var_name_tok.value}]\n"
+        elif node.op_tok.matches(TT_KEYWORD, 'not'):
+            l0 = self.label_idx
+            self.label_idx += 1
+            output += 'test ax, ax\n'
+            output += f'mov ax, 1\n'
+            output += f'jt .L{l0}\n'
+            output += f'mov ax, 0\n'
+            output += f'.L{l0}:\n'
         
         return res.success(output)
 
@@ -940,6 +978,7 @@ class Codegen:
         output += f"mov ax, 0\n"
         output += f"ret\n"
         output += f".L{l0}:\n"
+        output += f'mov ax, {node.func_name_tok.value}\n'
         
         return res.success(output)
     
