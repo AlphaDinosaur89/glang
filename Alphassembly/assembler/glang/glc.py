@@ -2,9 +2,10 @@ import argparse
 import sys
 import os
 import traceback
+import inspect
 
 from modules import lexer, _parser, codegen, nodes
-from modules.errors import Error
+from modules.errors import Error, IncludeError, PreprocessError
 from clog import log, error, errorp
 from builtins_ import BUILTINS
 
@@ -13,6 +14,8 @@ TT_KEYWORD = lexer.TT_KEYWORD
 TT_STRING = lexer.TT_STRING
 TT_EOF = lexer.TT_EOF
 TT_NEWLINE = lexer.TT_NEWLINE
+TT_IDENTIFIER = lexer.TT_IDENTIFIER
+TT_DCOLON = lexer.TT_DCOLON
 
 
 def parse_arguments():
@@ -27,36 +30,37 @@ def parse_arguments():
 
 def preprocess_tokens(tokens, include_paths):
     included_files = []
+    included_modules = []
+    temp_tokens = []
+    
     i = 0
     while i < len(tokens):
         token = tokens[i]
         if token.matches(TT_KEYWORD, 'include'):
             token = tokens[i + 1]
             if token.type != TT_STRING:
-                return None, f"Expected string after 'include' at {token.pos_start}"
+                return None, IncludeError(token.pos_start, token.pos_end, "Expected string")
             del tokens[i]
             inc = token
             del tokens[i]
-
-            if inc.value not in included_files:
-                for path in include_paths:
-                    file_path = os.path.join(path, inc.value)
-                    if os.path.isfile(file_path):
-                        included_files.append(inc.value)
-                        break
-                else:
-                    return None, f"File not found: {inc.value} in the include path"
-
-                with open(file_path, "r") as file:
-                    text = file.read() + '\n'
-                lex = lexer.Lexer(inc.value, text)
-                toks = lex.make_tokens()
-                tokens = toks[0] + tokens
-                i = -1
+            
+            for path in include_paths:
+                file_path = os.path.abspath(os.path.join(path, inc.value))
+                if file_path in included_files: break
+                if os.path.isfile(file_path):
+                    included_files.append(file_path)
+                    with open(file_path, "r") as file:
+                        text = file.read() + '\n'
+                    lex = lexer.Lexer(file_path, text)
+                    toks = lex.make_tokens()
+                    tokens = toks[0] + tokens
+                    i = -1
+                    break
+            else:
+                return None, f"File not found: {inc.value} in the include path"
 
         i += 1
 
-    temp_tokens = []
     i = 0
     while i <= len(tokens) - 1:
         token = tokens[i]
@@ -139,6 +143,7 @@ def compile_file(input_file, output_file, include_paths, silent, run):
         sys.exit(1)
 
     init_code = ""
+    init_code += "push 0\n"
     init_code += "mov [true], 1\n"
     init_code += "mov [false], 0\n\n"
     init_code += "\n".join(BUILTINS)
@@ -174,7 +179,7 @@ def compile_file(input_file, output_file, include_paths, silent, run):
         sys.exit(1)
 
     if run:
-        cmd = f'..\\..\\bin\\Debug\\net6.0\\Alphassembly.exe {output_file}.asb'
+        cmd = f'..\\..\\bin\\Release\\net6.0\\Alphassembly.exe {output_file}.asb'
         if not silent:
             log(f"[CMD] {cmd}")
         os.system(cmd)
@@ -185,11 +190,12 @@ def main():
 
     input_file = args.file
     output_file = args.output if args.output else "a"
-    include_paths = args.include or ['.\\', '.\\std\\']
+    args.include = [] if args.include == None else args.include
+    args.include.extend(['.\\', '.\\std\\'])
     silent = args.silent
     run = args.run
 
-    compile_file(input_file, output_file, include_paths, silent, run)
+    compile_file(input_file, output_file, args.include, silent, run)
 
 
 if __name__ == '__main__':

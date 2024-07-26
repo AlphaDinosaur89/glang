@@ -34,7 +34,6 @@ class ISyntaxError(Error):
         super().__init__(pos_start, pos_end, 'Invalid Syntax', details)
 
 
-
 class CTError(Error):
     def __init__(self, pos_start, pos_end, details=''):
         super().__init__(pos_start, pos_end, 'Compile time error', details)
@@ -43,3 +42,7 @@ class CTError(Error):
 class IncludeError(Error):
     def __init__(self, pos_start, pos_end, details=''):
         super().__init__(pos_start, pos_end, 'Include error', details)
+
+class PreprocessError(Error):
+    def __init__(self, pos_start, pos_end, details=''):
+        super().__init__(pos_start, pos_end, 'Preprocess error', details)

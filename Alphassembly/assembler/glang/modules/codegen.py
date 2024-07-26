@@ -17,6 +17,7 @@ class Codegen:
         self.class_bcall = '18'
         self.class_definitions = {}
         self.hoisted_definitions = ''
+        self.modules = {}
     
     def emit(self, node):
         method_name = f'emit_{type(node).__name__}'
@@ -283,7 +284,7 @@ class Codegen:
                 output += "push ax\n"
             else:
                 output += "mov bx, ax\n"
-                output += "push ax\n"
+                #output += "push ax\n" README: UNcomment this and add pops to all conditions if they dont work, they should though
             
             output += res.register(self.emit(node.left_node))
             if res.should_return(): return res
@@ -464,7 +465,6 @@ class Codegen:
             l2 = self.label_idx
             self.label_idx += 1
             
-            output += "pop\n"
             output += "cmp ax == bx\n"
             output += f"jt .L{l0}\n"
             output += f"jmp .L{l1}\n"            
@@ -482,7 +482,6 @@ class Codegen:
             l2 = self.label_idx
             self.label_idx += 1
             
-            output += "pop\n"
             output += "cmp ax != bx\n"
             output += f"jt .L{l0}\n"
             output += f"jmp .L{l1}\n"            
@@ -500,7 +499,6 @@ class Codegen:
             l2 = self.label_idx
             self.label_idx += 1
             
-            output += "pop\n"
             output += "cmp ax < bx\n"
             output += f"jt .L{l0}\n"
             output += f"jmp .L{l1}\n"            
@@ -518,7 +516,6 @@ class Codegen:
             l2 = self.label_idx
             self.label_idx += 1
             
-            output += "pop\n"
             output += "cmp ax > bx\n"
             output += f"jt .L{l0}\n"
             output += f"jmp .L{l1}\n"            
@@ -536,7 +533,6 @@ class Codegen:
             l2 = self.label_idx
             self.label_idx += 1
             
-            output += "pop\n"
             output += "cmp ax <= bx\n"
             output += f"jt .L{l0}\n"
             output += f"jmp .L{l1}\n"            
@@ -554,7 +550,6 @@ class Codegen:
             l2 = self.label_idx
             self.label_idx += 1
             
-            output += "pop\n"
             output += "cmp ax >= bx\n"
             output += f"jt .L{l0}\n"
             output += f"jmp .L{l1}\n"            
@@ -598,9 +593,9 @@ class Codegen:
             l0 = self.label_idx
             self.label_idx += 1
             output += 'test ax, ax\n'
-            output += f'mov ax, 1\n'
-            output += f'jt .L{l0}\n'
             output += f'mov ax, 0\n'
+            output += f'jt .L{l0}\n'
+            output += f'mov ax, 1\n'
             output += f'.L{l0}:\n'
         
         return res.success(output)
@@ -842,7 +837,7 @@ class Codegen:
                     
                     class_name = arg.var_name_tok.value
                     
-                    output += f'mov [.temp{class_name}], \'object {class_name}\'\n'
+                    output += f'mov [.temp{class_name}], \'object {class_name}\'\n' if class_name not in self.modules else f'mov [.temp{class_name}], \'module {class_name}\'\n'
                     
                     for property, value in self.class_definitions[class_name]:
                         #value
@@ -978,13 +973,15 @@ class Codegen:
         output += f"mov ax, 0\n"
         output += f"ret\n"
         output += f".L{l0}:\n"
-        output += f'mov ax, {node.func_name_tok.value}\n'
+        output += f'mov ax, [{node.func_name_tok.value}]\n'
         
         return res.success(output)
     
-    def emit_Classnode(self, node):
+    def emit_ClassNode(self, node):
         res = CTResult()
         output = ""
+        
+        output += f"mov ax, 0\n"
         
         return res.success(output)
 
@@ -995,6 +992,7 @@ class Codegen:
         #print(f"Inheritances: {node.inheritances}") #TODO: make inheritance work n stuff
         class_name = node.var_name_tok.value
         self.class_definitions[class_name] = node.value_node.element_nodes
+        if node.module: self.modules[class_name] = node.module
         
         # inherit and override variables
         var_list = []

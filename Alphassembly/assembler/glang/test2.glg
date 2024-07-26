@@ -1,0 +1,3 @@
+include "io.glg"
+
+printf("test1", 2, "Hello,", "World")

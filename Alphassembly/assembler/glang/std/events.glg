@@ -6,6 +6,7 @@ class Event:
     def constructor(this, name, function):
         var this.name = name
         var this.function = function
+        return this
     end
 end
 

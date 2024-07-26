@@ -54,5 +54,6 @@ KEYWORDS = [
     'return',
     'include',
     'class',
-    'not'
+    'not',
+    'module'
 ]

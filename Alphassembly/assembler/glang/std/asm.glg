@@ -6,3 +6,8 @@ end
 def asm_push(value):
     asm("push [value]")
 end
+
+def asm_getsp():
+    asm("mov ax, sp")
+    asm("ret")
+end

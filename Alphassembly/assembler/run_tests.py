@@ -23,7 +23,7 @@ def test(filename):
         ret = proc.returncode
         
         clog.log(f"Running tests/{extless}.asb")
-        proc = sp.run(["C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\Alphassembly\\bin\Debug\\net5.0\\Alphassembly.exe", 
+        proc = sp.run(["C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\Alphassembly\\bin\\Release\\net6.0\\Alphassembly.exe", 
                        f"tests\\{extless}.asb"],
                       capture_output=True)
         

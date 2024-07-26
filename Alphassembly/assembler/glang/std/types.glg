@@ -1,7 +1,7 @@
 include "asm.glg"
 include "core.glg"
 
-class types:
+module types:
 	int = "int"
 	str = "str"
 	float = "float"
@@ -11,8 +11,6 @@ class types:
 	function = "function"
     dict = "dict"
 end
-
-var types = new(class types)
 
 def type(value):
     if getattr(value, '.type'):

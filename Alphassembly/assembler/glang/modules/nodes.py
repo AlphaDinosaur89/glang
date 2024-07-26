@@ -203,11 +203,12 @@ class ClassNode:
 
 
 class ClassAssignNode:
-    def __init__(self, var_name_tok, properties, methods=None, inheritances=None):
+    def __init__(self, var_name_tok, properties, methods=None, inheritances=None, module=False):
         self.var_name_tok = var_name_tok
         self.value_node = properties
         self.methods = methods
         self.inheritances = inheritances
+        self.module = module
 
         self.pos_start = self.var_name_tok.pos_start
         self.pos_end = self.value_node.pos_end

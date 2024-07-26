@@ -50,10 +50,13 @@ class Parser:
             res.register_advancement()
             self.advance()
 
-
         statement = res.register(self.statement())
         if res.error: return res
-        statements.append(statement)
+        
+        if type(statement) is not list:
+            statement = [statement]
+        
+        statements.extend(statement)
 
         more_statements = True
 
@@ -69,11 +72,15 @@ class Parser:
             if not more_statements: break
             statement = res.try_register(self.statement())
             if res.error: return res
+            
+            if statement and  type(statement) is not list:
+                statement = [statement]
+            
             if not statement:
                 self.reverse(res.to_reverse_count)
                 more_statements = False
                 continue
-            statements.append(statement)
+            statements.extend(statement)
 
         return res.success(statements)
     
@@ -162,7 +169,8 @@ class Parser:
             
             return res.success(ReturnNode(expr, pos_start, self.current_tok.pos_start.copy()))
         
-        elif self.current_tok.matches(TT_KEYWORD, 'class'):
+        elif self.current_tok.matches(TT_KEYWORD, 'class') or self.current_tok.matches(TT_KEYWORD, 'module'):
+            is_module = True if self.current_tok.matches(TT_KEYWORD, 'module') else False
             res.register_advancement()
             self.advance()
             
@@ -229,6 +237,8 @@ class Parser:
                 base_name = class_name.value
                 if len(inheritances) > 0:
                     base_name = inheritances[0]
+                
+                base_name = 'module ' + base_name if is_module else base_name 
                 properties = [(StringNode(Token(TT_STRING, '.type',
                                                 self.current_tok.pos_start,
                                                 self.current_tok.pos_end)),
@@ -300,14 +310,24 @@ class Parser:
                 
                 methods = None if methods == [] else methods
                 
-                return res.success(ClassAssignNode(class_name, 
+                ret = [ClassAssignNode(class_name, 
                                                    ListNode(properties,
                                                                         pos_start=self.current_tok.pos_start,
                                                                         pos_end=self.current_tok.pos_end),
                                                    ListNode(methods,
                                                                         pos_start=self.current_tok.pos_start,
                                                                         pos_end=self.current_tok.pos_end),
-                                                   inheritances))
+                                                   inheritances, is_module)]
+                
+                if is_module:
+                    ret.append(VarAssignNode(class_name, 
+                                               CallNode(VarAccessNode(Token(TT_IDENTIFIER, "new",
+                                                                        pos_start = self.current_tok.pos_start,
+                                                                        pos_end = self.current_tok.pos_end)),
+                                                                        [ClassNode(class_name)]
+                                                                    )))
+                
+                return res.success(ret)
             
             #this used to be res.success(ClassNode(class_name, inheritances)) but it returns an error (too many arguments)
             return res.success(ClassNode(class_name))
@@ -360,7 +380,11 @@ class Parser:
             if tok.type in (TT_INC, TT_DEC):                
                 res.register_advancement()
                 self.advance()
-            factor = res.register(self.factor())
+            
+            if not tok.matches(TT_KEYWORD, 'not'):
+                factor = res.register(self.factor())
+            else:
+                factor = res.register(self.expr())
             if res.error: return res
             return res.success(UnaryOpNode(tok, factor))
 

@@ -4,12 +4,14 @@ var TOKEN = "MTA0MTA3OTE1MjI4NTA2OTQyNA.GZ6z2W.03FcMg6JrRR1c4CiONVxxJX7PoAsR-eMd
 var CHANNEL_ID = "1099232424887599121"
 
 def send_message(message):
-    var headers = ''
-    var headers.Authorization = 'Bot ' + TOKEN
-    setattr(headers, 'Content-Type', 'application/json')
+    var headers = {
+        'Authorization': 'Bot' + TOKEN, 
+        'Content-Type': 'application/json'
+    }
     
-    var payload = ''
-    var payload.content = message
+    var payload = {
+        'content':message
+    }
 
     var url = 'https://discord.com/api/v9/channels/' + CHANNEL_ID + '/messages'
     var response = requests_post(url, headers, payload)
