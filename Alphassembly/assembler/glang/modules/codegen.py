@@ -367,10 +367,9 @@ class Codegen:
                 tempvar = self.var_idx
                 output += f'mov [.V{tempvar}], ax\n'
                 self.var_idx += 1
-                for arg in node.right_node.arg_nodes[::-1]:
-                    output += res.register(self.emit(arg))
-                    if res.error: return res
-                    output += 'push ax\n'
+                
+                output += res.register(self.make_args(node.right_node.arg_nodes))
+                if res.error: return res
                 
                 output += res.register(self.emit(node.left_node))
                 if res.error: return res
@@ -392,10 +391,8 @@ class Codegen:
                     if type(node.right_node.left_node) is CallNode:
                         var = self.var_idx
                         self.var_idx += 1
-                        for arg in node.right_node.left_node.arg_nodes[::-1]:
-                            output += res.register(self.emit(arg))
-                            if res.error: return res
-                            output += 'push ax\n'
+                        output += res.register(self.make_args(node.right_node.left_node.arg_nodes))
+                        if res.error: return res
                             
                         output += res.register(self.emit(node.left_node))
                         if res.error: return res
@@ -417,10 +414,8 @@ class Codegen:
                     if type(node.right_node.left_node) is CallNode:
                         var = self.var_idx
                         self.var_idx += 1
-                        for arg in node.right_node.left_node.arg_nodes[::-1]:
-                            output += res.register(self.emit(arg))
-                            if res.error: return res
-                            output += 'push ax\n'
+                        output += res.register(self.make_args(node.right_node.left_node.arg_nodes))
+                        if res.error: return res
                             
                         output += res.register(self.emit(node.left_node))
                         if res.error: return res
@@ -771,6 +766,18 @@ class Codegen:
         
         return res.success(output)
     
+    def make_args(self, nodes):
+        res = CTResult()
+        output = ""
+        
+        output += f'mov cx, {len(nodes)}\n'
+        for node in nodes[::-1]:
+            output += res.register(self.emit(node))
+            if res.error: return res
+            output += "push ax\n"
+        
+        return res.success(output)
+    
     def emit_CallNode(self, node):
         res = CTResult()
         output = ""
@@ -783,9 +790,8 @@ class Codegen:
         func_name = node.node_to_call.var_name_tok.value or None
         
         if not func_name in BUILTINS:
-            for node_ in node.arg_nodes[::-1]:
-                output += res.register(self.emit(node_))
-                output += "push ax\n"
+            output += res.register(self.make_args(node.arg_nodes))
+            if res.error: return res
             
             output += res.register(self.emit(node.node_to_call))
             if res.error: return res
@@ -794,9 +800,7 @@ class Codegen:
         else:
             if not func_name in ("asm", "ref", "new"):
                 arg_len = len(node.arg_nodes)
-                for node in node.arg_nodes[::-1]:
-                    output += res.register(self.emit(node))
-                    output += "push ax\n"
+                output += res.register(self.make_args(node.arg_nodes))
                     
                 output += res.register(BUILTINS[func_name].execute(arg_len))
             else:
@@ -1189,8 +1193,8 @@ class Codegen:
         output += keys
         output += self.setr(var, '.keys')
         
-        output += values
-        output += self.setr(var, '.values')
+        #output += values
+        #output += self.setr(var, '.values')
         
         output += f'mov ax, [.V{var}]\n'
         

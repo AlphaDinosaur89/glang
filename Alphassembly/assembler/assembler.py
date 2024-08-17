@@ -370,16 +370,7 @@ class Assembler:
             self.binary.append(1)
             
             if value in REGISTERS:
-                if value == "ax":
-                    self.binary.append(0xa)
-                if value == "bx":
-                    self.binary.append(0xb)
-                if value == "cx":
-                    self.binary.append(0xc)
-                if value == "dx":
-                    self.binary.append(0xd)
-                if value == "sp":
-                    self.binary.append(0xe)
+                self.binary.append(REGISTERS[value])
             else:
                 raise Exception(f"Register not found: {value}")
 
@@ -502,16 +493,7 @@ class Assembler:
             if node.left.value in REGISTERS:
                 self.idx += 2
                 self.binary.append(1)
-                if node.left.value == "ax":
-                    self.binary.append(0xa)
-                elif node.left.value == "bx":
-                    self.binary.append(0xb)
-                elif node.left.value == "cx":
-                    self.binary.append(0xc)
-                elif node.left.value == "dx":
-                    self.binary.append(0xd)
-                elif node.left.value == "sp":
-                    self.binary.append(0xe)
+                self.binary.append(REGISTERS[node.left.value])
             else:
                 raise Exception(f"Register: {node.left.value} not found")
         elif node.left.type == TT_INT:
@@ -591,16 +573,7 @@ class Assembler:
         if node.left.type == TT_IDENTIFIER:
             if node.left.value in REGISTERS:
                 self.idx += 1
-                if node.left.value == "ax":
-                    self.binary.append(0xa)
-                elif node.left.value == "bx":
-                    self.binary.append(0xb)
-                elif node.left.value == "cx":
-                    self.binary.append(0xc)
-                elif node.left.value == "dx":
-                    self.binary.append(0xd)
-                elif node.left.value == "sp":
-                    self.binary.append(0xe)
+                self.binary.append(REGISTERS[node.left.value])
             else:
                 raise Exception(f"Register: {node.left.value} not found")
         elif node.left.type == TT_INT:

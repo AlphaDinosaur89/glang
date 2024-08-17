@@ -1,0 +1,43 @@
+include "types.glg"
+include "core.glg"
+include "list.glg"
+
+module dict:    
+    def keys(self, dic):
+        if type(dic) != types.dict: return []
+        return getattr(dic, '.keys')
+    end
+    
+    def values(self, dic):
+        if type(dic) != types.dict: return []
+        var vals = []
+        for i = 0 to len(self.keys(dic)) step 1:
+            append(vals, getattr(dic, self.keys(dic)[i]))
+        end
+        return vals
+    end
+    # TODO: when delete keyword is implemented make a remove() method
+    
+    def add(self, dic, key, value):
+        var keys = self.keys(dic)
+        append(keys, key)
+        
+        setattr(dic, key, value)
+        
+        setattr(dic, '.keys', keys)
+        return dic
+    end
+    
+    def copy(self, dic):
+        var newdic = {}
+        
+        var newdic[".keys"] = self.keys(dic)
+        var values = self.values(dic)
+        
+        for i = 0 to len(newdic[".keys"]):
+            setattr(newdic, getat(newdic[".keys"], i), values[i])
+        end
+        
+        return newdic
+    end
+end

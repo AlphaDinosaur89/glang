@@ -143,7 +143,6 @@ def compile_file(input_file, output_file, include_paths, silent, run):
         sys.exit(1)
 
     init_code = ""
-    init_code += "push 0\n"
     init_code += "mov [true], 1\n"
     init_code += "mov [false], 0\n\n"
     init_code += "\n".join(BUILTINS)

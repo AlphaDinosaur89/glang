@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4578750F-E253-4EBC-9F7F-3C8D11AD8926}|Alphassembly\\Alphassembly.csproj|c:\\users\\gamed\\documents\\projs\\alphassembly\\alphassembly\\alphassembly\\builtinfunctions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4578750F-E253-4EBC-9F7F-3C8D11AD8926}|Alphassembly\\Alphassembly.csproj|solutionrelative:alphassembly\\builtinfunctions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{4578750F-E253-4EBC-9F7F-3C8D11AD8926}|Alphassembly\\Alphassembly.csproj|c:\\users\\gamed\\documents\\projs\\alphassembly\\alphassembly\\alphassembly\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4578750F-E253-4EBC-9F7F-3C8D11AD8926}|Alphassembly\\Alphassembly.csproj|solutionrelative:alphassembly\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4578750F-E253-4EBC-9F7F-3C8D11AD8926}|Alphassembly\\Alphassembly.csproj|c:\\users\\gamed\\documents\\projs\\alphassembly\\alphassembly\\alphassembly\\builtinfunctions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4578750F-E253-4EBC-9F7F-3C8D11AD8926}|Alphassembly\\Alphassembly.csproj|solutionrelative:alphassembly\\builtinfunctions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{10AF04EF-B48B-4C51-BEBC-01B79F576202}|AlphassemblyRaylib\\AlphassemblyRaylib.csproj|c:\\users\\gamed\\documents\\projs\\alphassembly\\alphassembly\\alphassemblyraylib\\alphassemblyraylib.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -54,13 +54,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\Alphassembly\\Program.cs",
               "RelativeDocumentMoniker": "Alphassembly\\Program.cs",
               "ToolTip": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\Alphassembly\\Program.cs",
               "RelativeToolTip": "Alphassembly\\Program.cs",
-              "ViewState": "AQIAAH4CAAAAAAAAAAAjwI4CAAA8AAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAOcCAAAeAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2023-07-20T15:15:44.801Z",
               "EditorCaption": ""
@@ -73,7 +73,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "BuiltinFunctions.cs",
               "DocumentMoniker": "C:\\Users\\gamed\\Documents\\projs\\alphassembly\\Alphassembly\\Alphassembly\\BuiltinFunctions.cs",
               "RelativeDocumentMoniker": "Alphassembly\\BuiltinFunctions.cs",

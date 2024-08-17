@@ -2,25 +2,40 @@ include "asm.glg"
 include "conversion.glg"
 include "list.glg"
 
-def println(msg):
-    printf(str(msg))
+# same hack in printf
+def println():
+    asm("mov [varslen], cx")
+    var sep = ' '
+    var strs = []
+    for i = 0 to varslen:
+        append(strs, asm_getsp())
+        asm('pop')
+    end
+    
+    for i = 0 to len(strs):
+        if i == len(strs)-1: var sep = ''
+        
+        print(str(strs[i]) + sep)
+    end
+    
     printf("\n")
 end
 
 # Hack to make unknown length of arguments work, this will be a standard feature in the future.
 # i also need to add keyword arguments, this function for example could have a separator keyword argument to change the separator between strings
 def printf():
-    var msgs = []
-    while asm_getsp(): 
-        # I added a push 0 to the start of the assembly, this makes is a hack fix and i need ot have a bp register instead as an example of a better fix so i just compare it with sp
-        # that will make it so you cant print 0 unless you convert it to a string, will cause issues.
-        # also remove that pushed 0 at the top of the assembly, sometimes errors can pop up that i wont be able to locate with that like a random push that was not meant to be there
-        append(msgs, asm_getsp())
+    asm("mov [varslen], cx")
+    var sep = ' '
+    var strs = []
+    for i = 0 to varslen:
+        append(strs, asm_getsp())
         asm('pop')
     end
     
-    for i = 0 to len(msgs):
-        print(str(msgs[i])+ ' ')
+    for i = 0 to len(strs):
+        if i == len(strs)-1: var sep = ''
+        
+        print(str(strs[i]) + sep)
     end
 end
 

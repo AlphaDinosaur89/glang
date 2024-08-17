@@ -1,3 +1,9 @@
-include "io.glg"
+include "std.glg"
 
-printf("test1", 2, "Hello,", "World")
+var a = {"hi":"world"}
+var b = dict.copy(a) # if a copy isnt made a reference will be made
+
+var b["hi"] = "dlrow"
+
+println(a)
+println(b)
