@@ -1,0 +1,6 @@
+This test succeded with exit code: 0
+
+stdout:
+INFO: Compiling to tests/pointers.asb
+
+stderr:

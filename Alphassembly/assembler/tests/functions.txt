@@ -1,0 +1,7 @@
+This test succeded with exit code: 0
+
+stdout:
+INFO: Compiling to tests/functions.asb
+
+stderr:
+Unknown type: 11, ip 184

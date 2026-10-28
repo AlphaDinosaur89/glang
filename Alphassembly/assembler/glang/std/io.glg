@@ -1,0 +1,55 @@
+include "asm.glg"
+include "conversion.glg"
+include "list.glg"
+
+# same hack in printf
+def println():
+    asm("mov [varslen], cx")
+    var sep = ' '
+    var strs = []
+    for i = 0 to varslen:
+        append(strs, asm_getsp())
+        asm('pop')
+    end
+    
+    for i = 0 to len(strs):
+        if i == len(strs)-1: var sep = ''
+        
+        print(str(strs[i]) + sep)
+    end
+    
+    printf("\n")
+end
+
+# Hack to make unknown length of arguments work, this will be a standard feature in the future.
+# i also need to add keyword arguments, this function for example could have a separator keyword argument to change the separator between strings
+def printf():
+    asm("mov [varslen], cx")
+    var sep = ' '
+    var strs = []
+    for i = 0 to varslen:
+        append(strs, asm_getsp())
+        asm('pop')
+    end
+    
+    for i = 0 to len(strs):
+        if i == len(strs)-1: var sep = ''
+        
+        print(str(strs[i]) + sep)
+    end
+end
+
+def input(msg):
+    printf(msg)
+    return asm_bcall(0)
+end
+
+def breakinput(msg):
+    printf(msg)
+    return asm_bcall(14)
+end
+
+def open(filename):
+    asm_push(filename)
+    return asm_bcall(15)
+end

@@ -1,0 +1,23 @@
+include "asm.glg"
+include "core.glg"
+
+module types:
+	int = "int"
+	str = "str"
+	float = "float"
+	list = "list"
+	ptr = "ptr"
+	object = "object"
+	function = "function"
+    dict = "dict"
+end
+
+def type(value):
+    if getattr(value, '.type'):
+        var tp = getattr(value, '.type')
+        return tp
+    end
+
+    asm_push(value)
+    return asm_bcall(11)
+end

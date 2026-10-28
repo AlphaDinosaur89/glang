@@ -1,0 +1,7 @@
+This test succeded with exit code: 0
+
+stdout:
+INFO: Compiling to tests/comments.asb
+Hello, # world
+
+stderr:

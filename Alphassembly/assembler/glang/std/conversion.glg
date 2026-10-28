@@ -1,0 +1,75 @@
+include "asm.glg"
+include "types.glg"
+include "list.glg"
+include "dict.glg"
+include "io.glg"
+
+def int(value):
+    asm_push(value)
+    return asm_bcall(2)
+end
+
+def float(value):
+    asm_push(value)
+    return asm_bcall(3)
+end
+
+def str(value):
+    # dict string literal builder
+    # this is python style because this is named dict afterall: 
+    # {'balls':10, 'c':{'test':'okay', 'The balls!':62}} instead of { balls: 10, c: { test: 'okay', 'The balls!': 62 } }
+    if type(value) == types.dict:
+        var s = '{'
+        var keys = dict.keys(value)
+        var values = dict.values(value)
+        for i = 0 to len(keys) step 1:
+            var s = s + "'" + str(keys[i]) + "'" + ': '
+            if type(values[i]) == types.str:
+                var s = s + "'" + str(values[i]) + "'"
+            else:
+                var s = s + str(values[i])
+            end
+            if i != len(keys)-1: var s = s + ', '
+        end
+        var s = s + '}'
+        return s
+    elif type(value) == types.list:
+        #list literal builder
+        var s = '['
+        for i = 0 to len(value) step 1:
+            if type(value[i]) == types.str:
+                var s = s + "'" + str(value[i]) + "'"
+            else:
+                var s = s + str(value[i])
+            end
+            if i != len(value)-1: var s = s + ', '
+        end
+        var s = s + ']'
+        return s
+    elif type(value) == types.function:
+        return 'function'
+    end
+    
+    asm_push(value)
+    return asm_bcall(4)
+end
+
+def char(value):
+    asm_push(value)
+    return asm_bcall(12)
+end
+
+def ord(char):
+    asm("push [char]")
+    return asm_bcall(16)
+end
+
+def tolist(value):
+    var tmp = []
+    if type(value) == types.str:
+        for i = 0 to len(value):
+            append(*tmp, value[i])
+        end
+    end
+    return tmp
+end

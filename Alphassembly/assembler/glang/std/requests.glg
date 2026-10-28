@@ -1,0 +1,15 @@
+include "asm.glg"
+
+def requests_post(url, header, values):
+    asm_push(header)
+    asm_push(url)
+    asm_push(values)
+
+    return asm_bcall(19)    
+end
+
+def requests_get(url):
+    asm_push(url)
+
+    return asm_bcall(20)
+end

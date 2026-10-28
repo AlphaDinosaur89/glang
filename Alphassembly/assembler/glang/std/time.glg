@@ -1,0 +1,5 @@
+include "asm.glg"
+
+def time():
+	return asm_bcall(21)
+end
